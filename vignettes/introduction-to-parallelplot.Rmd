@@ -1,0 +1,131 @@
+---
+title: "Introduction to 'parallelPlot'"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to 'parallelPlot'}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 7
+)
+```
+
+```{r setup}
+library(parallelPlot)
+```
+
+## Basic usage (dataset uses `factor` type)
+
+```{r}
+parallelPlot(iris)
+```
+
+'species' column is of factor type and has box representation for its categories.
+
+## `refColumnDim` argument (referenced column is categorical)
+
+```{r}
+parallelPlot(iris, refColumnDim = "Species")
+```
+
+Each trace has a color depending of its 'species' value.
+
+## `categoricalCS` argument
+
+```{r}
+parallelPlot(iris, refColumnDim = "Species", categoricalCS = "Set1")
+```
+
+Colors used for categories are not the same as previously (supported values: Category10, Accent, Dark2, Paired, Set1).
+
+## `refColumnDim` argument (referenced column is continuous)
+
+```{r}
+parallelPlot(iris, refColumnDim = "Sepal.Length")
+```
+
+Each trace has a color depending of its 'Sepal.Length' value.
+
+## `continuousCS` argument
+
+```{r}
+parallelPlot(iris, refColumnDim = "Sepal.Length", continuousCS = "YlOrRd")
+```
+
+Colors used for traces are not the same as previously (supported values: Blues, RdBu, YlGnBu, YlOrRd, Reds).
+
+## Basic usage (dataset doesn't use `factor` type)
+
+```{r}
+parallelPlot(mtcars)
+```
+
+Several columns are of numerical type but should be of factor type (for example 'cyl').
+
+## `categorical` argument
+
+```{r}
+categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
+```
+
+'cyl' and four last columns have a box representation for its categories.
+
+## `inputColumns` argument
+
+```{r}
+categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+inputColumns <- c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
+parallelPlot(mtcars, categorical = categorical, inputColumns = inputColumns, refColumnDim = "cyl")
+```
+
+The column name is blue for outputs and green for inputs (in shiny mode, inputs can be edited).
+
+## `histoVisibility` argument
+
+```{r}
+histoVisibility <- rep(TRUE, ncol(iris))
+parallelPlot(iris, histoVisibility = histoVisibility)
+```
+
+An histogram is displayed for each column.
+
+## `cutoffs` argument
+
+```{r}
+histoVisibility <- rep(TRUE, ncol(iris))
+cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
+parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
+```
+
+Traces which are not kept by cutoffs are greyed; an histogram is displayed considering only kept traces.
+
+## `refRowIndex` argument
+
+```{r}
+parallelPlot(iris, refRowIndex = 1)
+```
+
+Axes are shifted vertically in such a way that first trace of the dataset looks horizontal.
+
+## `rotateTitle` argument
+
+```{r}
+parallelPlot(iris, refColumnDim = "Species", rotateTitle = TRUE)
+```
+
+Column names are rotated (can be useful for long column names).
+
+## `columnLabels` argument
+
+```{r}
+columnLabels <- gsub("\\.", "<br>", colnames(iris))
+parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
+```
+
+Given names are displayed in place of column names found in dataset; `<br>` is used to insert line breaks.

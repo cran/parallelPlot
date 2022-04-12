@@ -1,25 +1,80 @@
 #' htmlwidget for d3.js parallel coordinate plot
 #'
-#' @param data data.frame with data to use in the chart.
-#' @param categorical List of list (one for each data column) containing the name of available categories, or \code{NULL} if column corresponds to continuous data; \code{NULL} is allowed, meaning all columns are continuous.
-#' @param inputColumns List of boolean (one for each data column), \code{TRUE} for an input column, \code{FALSE} for an output column; \code{NULL} is allowed, meaning all columns are inputs.
-#' @param keptColumns List of boolean (one for each data column), \code{FALSE} if column has to be ignored; \code{NULL} is allowed, meaning all columns are available.
-#' @param histoVisibility List of boolean (one for each data column), \code{TRUE} if an histogram must be displayed; \code{NULL} is allowed, meaning no histogram must be displayed.
-#' @param cutoffs List of list (one for each data column) of list (one for each cutoff) containing two values (min and max values defining the cutoff) or \code{NULL} if there is no cutoff to apply; \code{NULL} is allowed, meaning all columns are without cutoff.
-#' @param refRowIndex Index of the sample row which has to appear horizontal; \code{NULL} is allowed, meaning there is no row to use as reference.
-#' @param refColumnDim Name of the reference column (used to determine the color to attribute to a row); \code{NULL} is allowed, meaning there is no coloring to apply.
-#' @param rotateTitle \code{TRUE} if column title must be rotated.
-#' @param columnLabels List of string (one for each data column) to display in place of column name found in data, or \code{NULL} if there is no alternative name; \code{NULL} is allowed, meaning all columns are without alternative name; \code{<br>} can be used to insert line breaks.
-#' @param continuousCS Name of the color Scale to use for continuous data (supported names: \code{Blues, RdBu, YlGnBu, YlOrRd, Reds}; default value is \code{Blues}).
-#' @param categoricalCS Name of the color Scale to use for categorical data (supported names: \code{Category10, Accent, Dark2, Paired, Set1}; default value is \code{Category10}).
-#' @param eventInputId When plot event occurred, reactive input to write to; \code{NULL} is allowed, default value is 'plotEvent'.
-#' @param editionMode Supported edition modes: \code{EditionOff, EditionOnDrag, EditionOnDragEnd}; default value is \code{EditionOff} .
-#' @param width Integer in pixels defining the width of the widget.
-#' @param height Integer in pixels defining the height of the widget.
-#' @param elementId Unique \code{CSS} selector id for the widget.
+#' @param data
+#'   data.frame with data to use in the chart.
+#' @param categorical
+#'   List of list (one for each data column) containing the name of available categories,
+#'   or \code{NULL} if column corresponds to continuous data;
+#'   \code{NULL} is allowed, meaning all columns are continuous.
+#' @param inputColumns
+#'   List of boolean (one for each data column), \code{TRUE} for an input column, \code{FALSE} for an output column;
+#'   \code{NULL} is allowed, meaning all columns are inputs.
+#' @param keptColumns
+#'   List of boolean (one for each data column), \code{FALSE} if column has to be ignored;
+#'   \code{NULL} is allowed, meaning all columns are available.
+#' @param histoVisibility
+#'   List of boolean (one for each data column), \code{TRUE} if an histogram must be displayed;
+#'   \code{NULL} is allowed, meaning no histogram must be displayed.
+#' @param invertedAxes
+#'   List of boolean (one for each data column), \code{TRUE} if orientation of axis must be inverted;
+#'   \code{NULL} is allowed, meaning no axis must be inverted.
+#' @param cutoffs
+#'   List of list (one for each data column) of list (one for each cutoff)
+#'   containing two values (min and max values defining the cutoff)
+#'   or \code{NULL} if there is no cutoff to apply;
+#'   \code{NULL} is allowed, meaning all columns are without cutoff.
+#' @param refRowIndex
+#'   Index of the sample row which has to appear horizontal;
+#'   \code{NULL} is allowed, meaning there is no row to use as reference.
+#' @param refColumnDim
+#'   Name of the reference column (used to determine the color to attribute to a row);
+#'   \code{NULL} is allowed, meaning there is no coloring to apply.
+#' @param rotateTitle
+#'   \code{TRUE} if column title must be rotated.
+#' @param columnLabels
+#'   List of string (one for each data column) to display in place of column name found in data,
+#'   or \code{NULL} if there is no alternative name;
+#'   \code{NULL} is allowed, meaning all columns are without alternative name;
+#'   \code{<br>} can be used to insert line breaks.
+#' @param continuousCS
+#'   Name of the color Scale to use for continuous data;
+#'   supported names: "Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault",
+#'   "Blues","Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd", "PuBuGn","PuBu",
+#'   "PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd";
+#'   default value is \code{Viridis}.
+#' @param categoricalCS
+#'   Name of the color Scale to use for categorical data;
+#'   supported names: Category10, Accent, Dark2, Paired, Set1;
+#'   default value is \code{Category10}.
+#' @param eventInputId
+#'   When plot event occurred, reactive input to write to; \code{NULL} is allowed, default value is 'plotEvent'.
+#' @param editionMode
+#'   Supported edition modes: \code{EditionOff, EditionOnDrag, EditionOnDragEnd}; default value is \code{EditionOff} .
+#' @param controlWidgets
+#'   Tells if some widgets must be available to control plot;
+#'   \code{NULL} is allowed, meaning that '!HTMLWidgets.shinyMode' is to use;
+#'   default value is \code{FALSE}.
+#' @param cssRules
+#'   CSS rules to add.
+#'   Must be a named list of the form list(selector = declarations),
+#'   where selector is a valid CSS selector and declarations is a string or vector of declarations.
+#' @param sliderPosition
+#'   Set initial position of slider, specifying which columns interval is visible.
+#'   Default value is \code{NULL} which is equivalent to:
+#'     list(
+#'       dimCount = 8,
+#'       startingDimIndex = 1
+#'     )
+#' @param width
+#'   Integer in pixels defining the width of the widget.
+#' @param height
+#'   Integer in pixels defining the height of the widget.
+#' @param elementId
+#'   Unique \code{CSS} selector id for the widget.
 #'
-#' @return An object of class \code{htmlwidget} that will intelligently print itself into HTML in a variety of contexts
-#' including the R console, within R Markdown documents, and within Shiny output bindings.
+#' @return
+#'   An object of class \code{htmlwidget} that will intelligently print itself into HTML in a variety of contexts
+#'   including the R console, within R Markdown documents, and within Shiny output bindings.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -44,38 +99,50 @@
 #'    columnLabels <- gsub("\\.", "<br>", colnames(iris))
 #'    parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
 #'    # Given names are displayed in place of dataset column names; <br> is used to insert line breaks
+#'
+#'    parallelPlot(iris, cssRules = list(
+#'        "svg" = "background: white",
+#'        ".tick text" = c("fill: red", "font-size: 1.8em")
+#'    ))
+#'    # Background of plot is white and text of axes ticks is red and greater
 #'  }
 #'
-#' @import htmlwidgets
+#' @importFrom htmlwidgets createWidget sizingPolicy shinyWidgetOutput shinyRenderWidget
 #'
 #' @export
 parallelPlot <- function(
-  data, 
-  categorical = NULL, 
-  inputColumns = NULL, 
-  keptColumns = NULL, 
-  histoVisibility = NULL, 
-  cutoffs = NULL, 
-  refRowIndex = NULL, 
-  refColumnDim = NULL, 
-  rotateTitle = FALSE, 
-  columnLabels = NULL, 
-  continuousCS = 'Blues', 
-  categoricalCS = 'Category10', 
-  eventInputId = NULL, 
-  editionMode = 'EditionOff',
-  width = NULL, 
-  height = NULL, 
+  data,
+  categorical = NULL,
+  inputColumns = NULL,
+  keptColumns = NULL,
+  histoVisibility = NULL,
+  invertedAxes = NULL,
+  cutoffs = NULL,
+  refRowIndex = NULL,
+  refColumnDim = NULL,
+  rotateTitle = FALSE,
+  columnLabels = NULL,
+  continuousCS = "Viridis",
+  categoricalCS = "Category10",
+  eventInputId = NULL,
+  editionMode = "EditionOff",
+  controlWidgets = FALSE,
+  cssRules = NULL,
+  sliderPosition = NULL,
+  width = NULL,
+  height = NULL,
   elementId = NULL
 ) {
 
   args <- checkArgs(
     list(
       data = data,
+      rowLabels = rownames(data),
       categorical = categorical,
       inputColumns = inputColumns,
       keptColumns = keptColumns,
       histoVisibility = histoVisibility,
+      invertedAxes = invertedAxes,
       cutoffs = cutoffs,
       refRowIndex = refRowIndex,
       refColumnDim = refColumnDim,
@@ -84,37 +151,44 @@ parallelPlot <- function(
       continuousCS = continuousCS,
       categoricalCS = categoricalCS,
       eventInputId = eventInputId,
-      editionMode = editionMode
+      editionMode = editionMode,
+      controlWidgets = controlWidgets,
+      cssRules = cssRules,
+      sliderPosition = sliderPosition
     )
   )
 
   # create widget
   htmlwidgets::createWidget(
-    name = 'parallelPlot',
+    name = "parallelPlot",
     args,
     width = width,
     height = height,
-    package = 'parallelPlot',
+    package = "parallelPlot",
     elementId = elementId
   )
 }
 
 checkArgs <- function(args) {
-  return (
+  return(
     checkEventInputId(
-      checkCategoricalCS(
-        checkContinuousCS(
-          checkColumnLabels(
+      checkSliderPosition(
+        checkCategoricalCS(
+          checkContinuousCS(
             checkColumnLabels(
-              checkRotateTitle(
-                checkRefColumnDim(
-                  checkRefRowIndex(
-                    checkCutoffs(
-                      checkHistoVisibility(
-                        checkInputColumns(
-                          checkKeptColumns(
-                            checkCategorical(
-                              checkData(args)
+              checkColumnLabels(
+                checkRotateTitle(
+                  checkRefColumnDim(
+                    checkRefRowIndex(
+                      checkCutoffs(
+                        checkinvertedAxes(
+                          checkHistoVisibility(
+                            checkInputColumns(
+                              checkKeptColumns(
+                                checkCategorical(
+                                  checkData(args)
+                                )
+                              )
                             )
                           )
                         )
@@ -249,7 +323,30 @@ checkHistoVisibility <- function(args) {
   return(args)
 }
 
-checkCutoffs <- function(args) {
+checkinvertedAxes <- function(args) {
+  colCount <- ncol(args$data)
+  if (!is.null(args$invertedAxes) && !is.vector(args$invertedAxes)) {
+    message("'invertedAxes' must be a vector")
+    args["invertedAxes"] <- list(NULL)
+  }
+  if (!is.null(args$invertedAxes)) {
+    if (colCount != length(args$invertedAxes)) {
+      message("Length of 'invertedAxes' must be equal to the number of columns of 'data'")
+      args["invertedAxes"] <- list(NULL)
+    }
+    else {
+      for (i in seq_len(length(args$invertedAxes))) {
+        if (!is.logical(args$invertedAxes[[i]])) {
+          message(paste("invertedAxes", i, "must be of logical type"))
+          args[["invertedAxes"]][i] <- FALSE
+        }
+      }
+    }
+  }
+  return(args)
+}
+
+checkCutoffs <- function(args) { # nolint
   colCount <- ncol(args$data)
   if (!is.null(args$cutoffs) && !is.list(args$cutoffs)) {
     message("'cutoffs' must be a list")
@@ -276,18 +373,18 @@ checkCutoffs <- function(args) {
                   if (!is.numeric(unlist(co))) {
                     message(paste("cutoffs", i, "contains a no-numeric interval:", toString(co)))
                     args[["cutoffs"]][i] <- list(NULL)
-                    break;
+                    break
                   }
                   if (length(co) != 2) {
                     message(paste("cutoffs", i, "contains an interval not defined by two values:", toString(co)))
                     args[["cutoffs"]][i] <- list(NULL)
-                    break;
+                    break
                   }
                 }
                 else {
                   message(paste("cutoffs", i, "contains an interval not defined by a vector:", toString(co)))
                   args[["cutoffs"]][i] <- list(NULL)
-                  break;
+                  break
                 }
               }
             }
@@ -319,7 +416,12 @@ checkRefRowIndex <- function(args) {
     args["refRowIndex"] <- list(NULL)
   }
   if (is.numeric(args$refRowIndex) && (args$refRowIndex < 1 || args$refRowIndex > rowCount)) {
-    message(paste("refRowIndex:", args$refRowIndex, "must be a valid row index, it must be in range:", paste0("[1, ", rowCount, "]")))
+    message(paste(
+      "refRowIndex:",
+      args$refRowIndex,
+      "must be a valid row index, it must be in range:",
+      paste0("[1, ", rowCount, "]")
+    ))
     args["refRowIndex"] <- list(NULL)
   }
   return(args)
@@ -328,7 +430,12 @@ checkRefRowIndex <- function(args) {
 checkRefColumnDim <- function(args) {
   colNames <- colnames(args$data)
   if (!is.null(args$refColumnDim) && is.na(match(args$refColumnDim, colNames))) {
-    message(paste("refColumnDim:", args$refColumnDim, "must be a valid column dimension, it must be one of:", toString(colNames)))
+    message(paste(
+      "refColumnDim:",
+      args$refColumnDim,
+      "must be a valid column dimension, it must be one of:",
+      toString(colNames)
+    ))
     args["refColumnDim"] <- list(NULL)
   }
   return(args)
@@ -366,23 +473,54 @@ checkColumnLabels <- function(args) {
 }
   
 checkContinuousCS <- function(args) {
-  continuousCSList = c("Blues", "RdBu", "YlGnBu", "YlOrRd", "Reds")
+  continuousCSList <- c(
+    "Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault",
+    "Blues", "Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd",
+    "PuBuGn", "PuBu", "PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd"
+  )
   if (is.na(match(args$continuousCS, continuousCSList))) {
-    message(paste("continuousCS:", args$continuousCS, "must be a valid continuous color scale name, it must be one of:", toString(continuousCSList)))
+    message(paste(
+      "continuousCS:",
+      args$continuousCS,
+      "must be a valid continuous color scale name, it must be one of:",
+      toString(continuousCSList)
+    ))
     args$continuousCS <- continuousCSList[1]
   }
   return(args)
 }
 
 checkCategoricalCS <- function(args) {
-  categoricalCSList = c("Category10", "Accent", "Dark2", "Paired", "Set1")
+  categoricalCSList <- c("Category10", "Accent", "Dark2", "Paired", "Set1")
   if (is.na(match(args$categoricalCS, categoricalCSList))) {
-    message(paste("categoricalCS:", args$categoricalCS, "must be a valid categorical color scale name, it must be one of:", toString(categoricalCSList)))
+    message(paste(
+      "categoricalCS:",
+      args$categoricalCS,
+      "must be a valid categorical color scale name, it must be one of:",
+      toString(categoricalCSList)
+    ))
     args["categoricalCS"] <- categoricalCSList[1]
   }
   return(args)
 }
   
+checkSliderPosition <- function(args) {
+  if (!is.null(args$sliderPosition) && !is.list(args$sliderPosition)) {
+    message("'sliderPosition' must be a list")
+    args["sliderPosition"] <- list(NULL)
+  }
+  if (!is.null(args$sliderPosition)) {
+    validKeys <- c("dimCount", "startingDimIndex")
+    unknownKeys <- setdiff(names(args$sliderPosition), validKeys)
+    if (length(unknownKeys) != 0) {
+      message(paste0("sliderPosition constains invalid properties: ", toString(unknownKeys),
+        ". Valid properties are:", toString(validKeys)))
+      args["sliderPosition"] <- list(NULL)
+    }
+  }
+  return(args)
+}
+
 checkEventInputId <- function(args) {
   if (!is.null(args$eventInputId) && !is.character(args$eventInputId)) {
     message("'eventInputId' must be of character type")
@@ -410,14 +548,16 @@ checkEventInputId <- function(args) {
 #' @name parallelPlot-shiny
 #'
 #' @export
-parallelPlotOutput <- function(outputId, width = '100%', height = '600px'){
-  htmlwidgets::shinyWidgetOutput(outputId, 'parallelPlot', width, height, package = 'parallelPlot')
+parallelPlotOutput <- function(outputId, width = "100%", height = "600px") {
+  htmlwidgets::shinyWidgetOutput(outputId, "parallelPlot", width, height, package = "parallelPlot")
 }
 
 #' @rdname parallelPlot-shiny
 #' @export
 renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
-  if (!quoted) { expr <- substitute(expr) } # force quoted
+  if (!quoted) {
+    expr <- substitute(expr)
+  } # force quoted
   htmlwidgets::shinyRenderWidget(expr, parallelPlotOutput, env, quoted = TRUE)
 }
 
@@ -425,11 +565,17 @@ renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
 #'
 #' Tells which color scale to use when reference column is of type continuous.
 #'
-#' If a column is defined as the reference (for example by clicking on its header), a color scale is associated to this column.
+#' If a column is defined as the reference (for example by clicking on its header),
+#' a color scale is associated to this column.
 #' Available color scale ids are: `Blues`, `RdBu`, `YlGnBu`, `YlOrRd`, `Reds`.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param continuousCsId one of the available color scale ids
+#' @param id
+#'   Output variable to read from (id which references the requested plot).
+#' @param continuousCsId
+#'   One of the available color scale ids
+#'   ("Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault",
+#'    "Blues","Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd",
+#'    "PuBuGn","PuBu", "PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd").
 #'
 #' @return No return value, called from shiny applications for side effects.
 #'
@@ -439,9 +585,21 @@ renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
-#'        selectInput("continuousCsSelect", "Continuous Color Scale:", 
-#'            choices = list("Blues" = "Blues", "RdBu" = "RdBu", "YlGnBu" = "YlGnBu", 
-#'                            "YlOrRd" = "YlOrRd", "Reds" = "Reds"), selected = "Blues"),
+#'        selectInput(
+#'          "continuousCsSelect",
+#'          "Continuous Color Scale:",
+#'          choices = list(
+#'            "Viridis" = "Viridis", "Inferno" = "Inferno", "Magma" = "Magma",
+#'            "Plasma" = "Plasma", "Warm" = "Warm", "Cool" = "Cool", "Rainbow" ="Rainbow",
+#'            "CubehelixDefault" = "CubehelixDefault", "Blues" = "Blues",
+#'            "Greens" = "Greens", "Greys" = "Greys", "Oranges" = "Oranges",
+#'            "Purples" = "Purples", "Reds" = "Reds", "BuGn" = "BuGn", "BuPu" = "BuPu",
+#'            "GnBu" = "GnBu", "OrRd" = "OrRd", "PuBuGn" = "PuBuGn", "PuBu" = "PuBu",
+#'            "PuRd" = "PuRd", "RdBu" = "RdBu", "RdPu" = "RdPu", "YlGnBu" = "YlGnBu",
+#'            "YlGn" = "YlGn", "YlOrBr" = "YlOrBr", "YlOrRd" = "YlOrRd"
+#'          ),
+#'          selected = "Viridis"
+#'        ),
 #'        p("The selector controls the colors used when reference column is of type continuous"),
 #'        parallelPlotOutput("parPlot")
 #'    )
@@ -460,7 +618,7 @@ renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
 #'
 #' @export
 setContinuousColorScale <- function(id, continuousCsId) {
-  method <- "setContinuousColorScale"
+  method <- "setContinuousColorScale" # nolint
   callJS()
 }
 
@@ -468,13 +626,17 @@ setContinuousColorScale <- function(id, continuousCsId) {
 #'
 #' Tells which color scale to use when reference column is of type categorical.
 #'
-#' If a column is defined as the reference (for example by clicking on its header), a color scale is associated to this column.
+#' If a column is defined as the reference (for example by clicking on its header),
+#' a color scale is associated to this column.
 #' Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param categoricalCsId one of the available color scale ids
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param categoricalCsId
+#'   one of the available color scale ids
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -482,8 +644,8 @@ setContinuousColorScale <- function(id, continuousCsId) {
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
-#'        selectInput("categoricalCsSelect", "Categorical Color Scale:", 
-#'            choices = list("Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2", 
+#'        selectInput("categoricalCsSelect", "Categorical Color Scale:",
+#'            choices = list("Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2",
 #'                            "Paired" = "Paired", "Set1" = "Set1"), selected = "Category10"),
 #'        p("The selector controls the colors used when reference column is of type categorical"),
 #'        parallelPlotOutput("parPlot")
@@ -503,7 +665,7 @@ setContinuousColorScale <- function(id, continuousCsId) {
 #'
 #' @export
 setCategoricalColorScale <- function(id, categoricalCsId) {
-  method <- "setCategoricalColorScale"
+  method <- "setCategoricalColorScale" # nolint
   callJS()
 }
 
@@ -511,10 +673,15 @@ setCategoricalColorScale <- function(id, categoricalCsId) {
 #'
 #' Tells which columns have to be displayed with histograms.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param histoVisibility Vector of boolean (one for each data column), \code{TRUE} if an histogram must be displayed; \code{NULL} is allowed, meaning no histogram must be displayed. A named list can also be provided to only indicate which columns must be assigned to a new display.
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param histoVisibility
+#'   Vector of boolean (one for each data column), \code{TRUE} if an histogram must be displayed;
+#'   \code{NULL} is allowed, meaning no histogram must be displayed.
+#'   A named list can also be provided to only indicate which columns must be assigned to a new display.
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -542,7 +709,51 @@ setCategoricalColorScale <- function(id, categoricalCsId) {
 #'
 #' @export
 setHistoVisibility <- function(id, histoVisibility) {
-  method <- "setHistoVisibility"
+  method <- "setHistoVisibility" # nolint
+  callJS()
+}
+
+#' Axis orientation
+#'
+#' Tells which axes have to be displayed with an inverted orientation.
+#'
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param invertedAxes
+#'   Vector of boolean (one for each data column), \code{TRUE} if axis orientation must be inverted;
+#'   \code{NULL} is allowed, meaning no axis must be inverted.
+#'   A named list can also be provided to only indicate which axes must be assigned to a new orientation.
+#'
+#' @return
+#'   No return value, called from shiny applications for side effects.
+#'
+#' @examples
+#'  if(interactive()) {
+#'    library(shiny)
+#'    library(parallelPlot)
+#'
+#'    ui <- fluidPage(
+#'        checkboxInput("orientationCB", "Axis orientation", FALSE),
+#'        p("The check box controls the orientation of axes"),
+#'        parallelPlotOutput("parPlot")
+#'    )
+#'
+#'    server <- function(input, output, session) {
+#'        output$parPlot <- renderParallelPlot({
+#'            parallelPlot(iris)
+#'        })
+#'        observeEvent(input$orientationCB, {
+#'            invertedAxes <- rep(input$orientationCB, ncol(iris))
+#'            parallelPlot::setInvertedAxes("parPlot", invertedAxes)
+#'        })
+#'    }
+#'
+#'    shinyApp(ui, server)
+#'  }
+#'
+#' @export
+setInvertedAxes <- function(id, invertedAxes) {
+  method <- "setInvertedAxes" # nolint
   callJS()
 }
 
@@ -552,10 +763,18 @@ setHistoVisibility <- function(id, histoVisibility) {
 #'
 #' It's possible to filter some traces by defining cutoffs to apply to columns.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param cutoffs Vector of list (one for each data column) of vector (one for each cutoff) containing two values for continuous input (min and max value defining the cutoff), or one value for categorical input (name of the category to keep), or \code{NULL} if there is no cutoff to apply; \code{NULL} is allowed, meaning all columns are without cutoff. A named list can also be provided to only indicate which columns must be assigned to a new cutoff.
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param cutoffs
+#'   Vector of list (one for each data column) of vector (one for each cutoff)
+#'   containing two values for continuous input (min and max value defining the cutoff),
+#'   or one value for categorical input (name of the category to keep),
+#'   or \code{NULL} if there is no cutoff to apply;
+#'   \code{NULL} is allowed, meaning all columns are without cutoff.
+#'   A named list can also be provided to only indicate which columns must be assigned to a new cutoff.
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -563,7 +782,7 @@ setHistoVisibility <- function(id, histoVisibility) {
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
-#'        sliderInput("brushSlider", "Brush for 'Sepal.Length' column:", 
+#'        sliderInput("brushSlider", "Brush for 'Sepal.Length' column:",
 #'            min = 4, max = 8, step = 0.1, value = c(4, 8)),
 #'        p("The slider controls the rows which are kept by cutoff (others are greyed)"),
 #'        parallelPlotOutput("parPlot")
@@ -585,18 +804,22 @@ setHistoVisibility <- function(id, histoVisibility) {
 #'
 #' @export
 setCutoffs <- function(id, cutoffs) {
-  method <- "setCutoffs"
+  method <- "setCutoffs" # nolint
   callJS()
 }
 
-#' Column visibitity
+#' Column visibility
 #'
 #' Tells which columns have to be visible.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param keptColumns Vector of boolean (one for each data column), \code{FALSE} if column has to be hidden. A named list can also be provided to only indicate which columns must be assigned to a new visibility.
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param keptColumns
+#'   Vector of boolean (one for each data column), \code{FALSE} if column has to be hidden.
+#'   A named list can also be provided to only indicate which columns must be assigned to a new visibility.
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -614,9 +837,13 @@ setCutoffs <- function(id, cutoffs) {
 #'            parallelPlot(mtcars)
 #'        })
 #'        observeEvent(input$hideColumnsCB, {
-#'            keptColumns <- sapply(1:ncol(mtcars), function(i) {
+#'            keptColumns <- vapply(
+#'              1:ncol(mtcars),
+#'              function(i) {
 #'                return(ifelse(input$hideColumnsCB, ncol(mtcars) - i >= 2, TRUE))
-#'            })
+#'              },
+#'              logical(1)
+#'            )
 #'            parallelPlot::setKeptColumns("parPlot", keptColumns)
 #'        })
 #'    }
@@ -626,22 +853,26 @@ setCutoffs <- function(id, cutoffs) {
 #'
 #' @export
 setKeptColumns <- function(id, keptColumns) {
-  method <- "setKeptColumns"
+  method <- "setKeptColumns" # nolint
   callJS()
 }
 
 #' Plot attributes
 #'
-#' Asks to retrieve the value of an attribute. 
+#' Asks to retrieve the value of an attribute.
 #'
 #' Available attributes are 'Cutoffs', 'SelectedTraces' and 'ReferenceColumn'.
 #' Result will be sent through a reactive input.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param attrType which value is requested. 
-#' @param valueInputId reactive input to write to. 
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param attrType
+#'   which value is requested.
+#' @param valueInputId
+#'   reactive input to write to.
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -675,19 +906,23 @@ setKeptColumns <- function(id, keptColumns) {
 #'
 #' @export
 getValue <- function(id, attrType, valueInputId) {
-  method <- "getValue"
+  method <- "getValue" # nolint
   callJS()
 }
 
 #' Row edition
 #'
-#' Asks to change a row. 
+#' Asks to change a row.
 #'
-#' @param id output variable to read from (id which references the requested plot)
-#' @param rowIndex index of the changed row.
-#' @param newValues list of new values to attribute to the row (list associating a value to a column identifier). 
+#' @param id
+#'   output variable to read from (id which references the requested plot)
+#' @param rowIndex
+#'   index of the changed row.
+#' @param newValues
+#'   list of new values to attribute to the row (list associating a value to a column identifier).
 #'
-#' @return No return value, called from shiny applications for side effects.
+#' @return
+#'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
 #'  if(interactive()) {
@@ -695,7 +930,7 @@ getValue <- function(id, attrType, valueInputId) {
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
-#'        sliderInput("rowValueSlider", "Value for 'Sepal.Length' of first row:", 
+#'        sliderInput("rowValueSlider", "Value for 'Sepal.Length' of first row:",
 #'            min = 4, max = 8, step = 0.1, value = iris[["Sepal.Length"]][1]),
 #'        p("The slider controls the new value to assign to the 'Sepal.Length' of the first row"),
 #'        parallelPlotOutput("parPlot")
@@ -717,7 +952,23 @@ getValue <- function(id, attrType, valueInputId) {
 #'
 #' @export
 changeRow <- function(id, rowIndex, newValues) {
-  method <- "changeRow"
+  method <- "changeRow" # nolint
+  callJS()
+}
+
+#' Asks to retrieve the plot configuration.
+#' Result will be sent through a reactive input.
+#' @param id
+#'   Output variable to read from (id which references the requested plot).
+#' @param configInputId
+#'   Reactive input to write to.
+#'
+#' @return
+#'   No return value, called from shiny applications for side effects.
+#'
+#' @export
+getPlotConfig <- function(id, configInputId) {
+  method <- "getPlotConfig" # nolint
   callJS()
 }
 

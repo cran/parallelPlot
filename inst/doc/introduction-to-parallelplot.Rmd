@@ -95,6 +95,16 @@ parallelPlot(iris, histoVisibility = histoVisibility)
 
 An histogram is displayed for each column.
 
+## `invertedAxes` argument
+
+```{r}
+invertedAxes <- rep(FALSE, ncol(iris))
+invertedAxes[2] <- TRUE
+parallelPlot(iris, invertedAxes = invertedAxes)
+```
+
+Axe of second column is inverted.
+
 ## `cutoffs` argument
 
 ```{r}
@@ -129,3 +139,36 @@ parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
 ```
 
 Given names are displayed in place of column names found in dataset; `<br>` is used to insert line breaks.
+
+## `cssRules` argument
+
+```{r}
+parallelPlot(iris, cssRules = list(
+    "svg" = "background: white", # Set background of plot to white
+    ".tick text" = c("fill: red", "font-size: 1.8em") # Set text of axes ticks red and greater
+))
+```
+
+Apply CSS to the plot. CSS is a simple way to describe how elements on a web page should be displayed (position, colour, size, etc.). 
+You can learn the basics at [W3Schools](https://www.w3schools.com/css/).
+You can learn how to examine and edit css at [MDN Web Docs](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html) for Firexox or [Chrome devtools](https://developer.chrome.com/docs/devtools/css/) for Chrome.
+
+## `sliderPosition` argument
+
+```{r}
+parallelPlot(iris, sliderPosition = list(
+  dimCount = 3, # Number of columns to show
+  startingDimIndex = 2 # Index of first shown column
+))
+# Visible columns starts at second column and three columns are represented.
+```
+
+Set initial position of slider, specifying which columns interval is visible.
+
+## `controlWidgets` argument
+
+```{r}
+parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE)
+```
+
+Some widgets are available to control the plot.

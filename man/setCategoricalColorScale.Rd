@@ -18,7 +18,8 @@ No return value, called from shiny applications for side effects.
 Tells which color scale to use when reference column is of type categorical.
 }
 \details{
-If a column is defined as the reference (for example by clicking on its header), a color scale is associated to this column.
+If a column is defined as the reference (for example by clicking on its header),
+a color scale is associated to this column.
 Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`.
 }
 \examples{
@@ -27,8 +28,8 @@ Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`
    library(parallelPlot)
 
    ui <- fluidPage(
-       selectInput("categoricalCsSelect", "Categorical Color Scale:", 
-           choices = list("Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2", 
+       selectInput("categoricalCsSelect", "Categorical Color Scale:",
+           choices = list("Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2",
                            "Paired" = "Paired", "Set1" = "Set1"), selected = "Category10"),
        p("The selector controls the colors used when reference column is of type categorical"),
        parallelPlotOutput("parPlot")

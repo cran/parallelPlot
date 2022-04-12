@@ -9,7 +9,9 @@ setHistoVisibility(id, histoVisibility)
 \arguments{
 \item{id}{output variable to read from (id which references the requested plot)}
 
-\item{histoVisibility}{Vector of boolean (one for each data column), \code{TRUE} if an histogram must be displayed; \code{NULL} is allowed, meaning no histogram must be displayed. A named list can also be provided to only indicate which columns must be assigned to a new display.}
+\item{histoVisibility}{Vector of boolean (one for each data column), \code{TRUE} if an histogram must be displayed;
+\code{NULL} is allowed, meaning no histogram must be displayed.
+A named list can also be provided to only indicate which columns must be assigned to a new display.}
 }
 \value{
 No return value, called from shiny applications for side effects.

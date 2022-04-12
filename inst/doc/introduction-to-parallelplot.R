@@ -40,6 +40,11 @@ histoVisibility <- rep(TRUE, ncol(iris))
 parallelPlot(iris, histoVisibility = histoVisibility)
 
 ## -----------------------------------------------------------------------------
+invertedAxes <- rep(FALSE, ncol(iris))
+invertedAxes[2] <- TRUE
+parallelPlot(iris, invertedAxes = invertedAxes)
+
+## -----------------------------------------------------------------------------
 histoVisibility <- rep(TRUE, ncol(iris))
 cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
 parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
@@ -53,4 +58,20 @@ parallelPlot(iris, refColumnDim = "Species", rotateTitle = TRUE)
 ## -----------------------------------------------------------------------------
 columnLabels <- gsub("\\.", "<br>", colnames(iris))
 parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
+
+## -----------------------------------------------------------------------------
+parallelPlot(iris, cssRules = list(
+    "svg" = "background: white", # Set background of plot to white
+    ".tick text" = c("fill: red", "font-size: 1.8em") # Set text of axes ticks red and greater
+))
+
+## -----------------------------------------------------------------------------
+parallelPlot(iris, sliderPosition = list(
+  dimCount = 3, # Number of columns to show
+  startingDimIndex = 2 # Index of first shown column
+))
+# Visible columns starts at second column and three columns are represented.
+
+## -----------------------------------------------------------------------------
+parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE)
 

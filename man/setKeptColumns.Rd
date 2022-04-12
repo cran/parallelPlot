@@ -2,14 +2,15 @@
 % Please edit documentation in R/parallelPlot.R
 \name{setKeptColumns}
 \alias{setKeptColumns}
-\title{Column visibitity}
+\title{Column visibility}
 \usage{
 setKeptColumns(id, keptColumns)
 }
 \arguments{
 \item{id}{output variable to read from (id which references the requested plot)}
 
-\item{keptColumns}{Vector of boolean (one for each data column), \code{FALSE} if column has to be hidden. A named list can also be provided to only indicate which columns must be assigned to a new visibility.}
+\item{keptColumns}{Vector of boolean (one for each data column), \code{FALSE} if column has to be hidden.
+A named list can also be provided to only indicate which columns must be assigned to a new visibility.}
 }
 \value{
 No return value, called from shiny applications for side effects.
@@ -33,9 +34,13 @@ Tells which columns have to be visible.
            parallelPlot(mtcars)
        })
        observeEvent(input$hideColumnsCB, {
-           keptColumns <- sapply(1:ncol(mtcars), function(i) {
+           keptColumns <- vapply(
+             1:ncol(mtcars),
+             function(i) {
                return(ifelse(input$hideColumnsCB, ncol(mtcars) - i >= 2, TRUE))
-           })
+             },
+             logical(1)
+           )
            parallelPlot::setKeptColumns("parPlot", keptColumns)
        })
    }

@@ -3,12 +3,8 @@ dependencies:
     version: 5.7.0
     src: htmlwidgets/lib/d3
     script: d3-5.15.0.min.js
-  - name: d3-scale-chromatic
-    version: 0.3
-    src: htmlwidgets/lib/d3-scale-chromatic
-    script: d3-scale-chromatic.v0.3.min.js
   - name: parallelPlot
-    version: 0.1
+    version: 0.2
     src: htmlwidgets/lib/parallelPlot
-    script: [expFormat.js, categorical.js, column.js, rowFilter.js, brushSlider.js, multiBrush.js, parallelPlot.js, columnHeaders.js]
+    script: pp.js
     stylesheet: parallelPlot.css

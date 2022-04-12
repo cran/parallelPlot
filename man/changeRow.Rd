@@ -25,7 +25,7 @@ Asks to change a row.
    library(parallelPlot)
 
    ui <- fluidPage(
-       sliderInput("rowValueSlider", "Value for 'Sepal.Length' of first row:", 
+       sliderInput("rowValueSlider", "Value for 'Sepal.Length' of first row:",
            min = 4, max = 8, step = 0.1, value = iris[["Sepal.Length"]][1]),
        p("The slider controls the new value to assign to the 'Sepal.Length' of the first row"),
        parallelPlotOutput("parPlot")

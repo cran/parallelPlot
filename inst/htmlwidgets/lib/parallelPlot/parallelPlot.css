@@ -82,3 +82,41 @@
     cursor: row-resize;
     shape-rendering: "auto";
 }
+
+.parallelPlot .controlDiv {
+    display: flex;
+    justify-content: center;
+    align-items: stretch;
+    align-content: center;
+    margin: 0.5em;
+    column-gap: 1em;
+}
+  
+.parallelPlot .withoutWidgets .controlDiv {
+    display: none;
+}
+
+.parallelPlot .ppDiv {
+    position: relative;
+}
+  
+.parallelPlot .ppTooltip {
+    display: none;
+    position: absolute;
+    font-size: .8em;
+    text-align: left;
+    border-style: none;
+    border-radius: 0.4em;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    padding: 0.4em;
+    pointer-events: none;
+}
+
+.parallelPlot .ppTooltip .title {
+    margin-bottom: 0.5em;
+    font-weight: bold;
+    color: red;
+}
+
+  

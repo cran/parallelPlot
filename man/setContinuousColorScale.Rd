@@ -2,7 +2,7 @@
 % Please edit documentation in R/parallelPlot.R
 \name{setContinuousColorScale}
 \alias{setContinuousColorScale}
-\title{Traces colors}
+\title{Lines colors}
 \usage{
 setContinuousColorScale(id, continuousCsId)
 }
@@ -26,7 +26,7 @@ a color scale is associated to this column.
 Available color scale ids are: `Blues`, `RdBu`, `YlGnBu`, `YlOrRd`, `Reds`.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 

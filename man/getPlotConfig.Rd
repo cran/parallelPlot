@@ -19,3 +19,62 @@ No return value, called from shiny applications for side effects.
 Asks to retrieve the plot configuration.
 Result will be sent through a reactive input.
 }
+\examples{
+\dontrun{
+   library(shiny)
+   library(shinyjs)
+   library(parallelPlot)
+
+   ui <- fluidPage(
+       useShinyjs(),
+       p("The button allows to save the widget as an html file, reproducing its configuration"),
+       actionButton("downloadButton", "Download Widget"),
+       downloadButton("associatedDownloadButton", "Download Widget",
+           style = "visibility: hidden;"
+       ),
+       parallelPlotOutput("parPlot")
+   )
+
+   server <- function(input, output, session) {
+       output$parPlot <- renderParallelPlot({
+           parallelPlot(iris)
+       })
+       observeEvent(input$downloadButton, {
+           parallelPlot::getPlotConfig("parPlot", "ConfigForDownload")
+       })
+       observeEvent(input$ConfigForDownload, {
+         ppForDownload <<- parallelPlot(
+           data = iris,
+           categorical = input$ConfigForDownload$categorical,
+           categoriesRep = input$ConfigForDownload$categoriesRep,
+           arrangeMethod = input$ConfigForDownload$arrangeMethod,
+           inputColumns = input$ConfigForDownload$inputColumns,
+           keptColumns = input$ConfigForDownload$keptColumns,
+           histoVisibility = input$ConfigForDownload$histoVisibility,
+           invertedAxes = input$ConfigForDownload$invertedAxes,
+           cutoffs = input$ConfigForDownload$cutoffs,
+           refRowIndex = input$ConfigForDownload$refRowIndex,
+           refColumnDim = input$ConfigForDownload$refColumnDim,
+           rotateTitle = input$ConfigForDownload$rotateTitle,
+           columnLabels = input$ConfigForDownload$columnLabels,
+           continuousCS = input$ConfigForDownload$continuousCS,
+           categoricalCS = input$ConfigForDownload$categoricalCS,
+           controlWidgets = NULL,
+           cssRules = input$ConfigForDownload$cssRules
+         )
+         shinyjs::runjs("document.getElementById('associatedDownloadButton').click();")
+       })
+       output$associatedDownloadButton <- downloadHandler(
+         filename = function() {
+           paste("parallelPlot-", Sys.Date(), ".html", sep = "")
+         },
+         content = function(tmpContentFile) {
+           htmlwidgets::saveWidget(ppForDownload, tmpContentFile)
+         }
+       )
+   }
+
+   shinyApp(ui, server)
+ }
+
+}

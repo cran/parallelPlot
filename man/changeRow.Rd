@@ -20,7 +20,7 @@ No return value, called from shiny applications for side effects.
 Asks to change a row.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 

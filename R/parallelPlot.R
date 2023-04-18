@@ -6,6 +6,17 @@
 #'   List of list (one for each data column) containing the name of available categories,
 #'   or \code{NULL} if column corresponds to continuous data;
 #'   \code{NULL} is allowed, meaning all columns are continuous.
+#' @param categoriesRep
+#'   Within a category column, the height assigned to each category can either be:
+#'   equal for each category (\code{EquallySizedBoxes});
+#'   or calculated to reflect the proportion of lines passing through each category (\code{EquallySpacedLines}).
+#' @param arrangeMethod
+#'   Within a category box:
+#'   the position of lines can be calculated to minimize crossings on the left of the box (\code{fromLeft});
+#'   the position of lines can be calculated to minimize crossings on the right (\code{fromRight}, default behavior);
+#'   lines can be split in two points to minimize crossings on the left and on the right (\code{fromBoth}).
+#'   To turn this ordering off (for example for performance reasons),
+#'   `arrangeMethod` can also be set to \code{fromNone}.
 #' @param inputColumns
 #'   List of boolean (one for each data column), \code{TRUE} for an input column, \code{FALSE} for an output column;
 #'   \code{NULL} is allowed, meaning all columns are inputs.
@@ -91,7 +102,7 @@
 #'    histoVisibility <- rep(TRUE, ncol(iris))
 #'    cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
 #'    parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
-#'    # Cut traces are greyed; an histogram is displayed considering only kept traces
+#'    # Cut lines are shaded; an histogram is displayed considering only kept lines
 #'
 #'    parallelPlot(iris, refRowIndex = 1)
 #'    # Axes are shifted vertically in such a way that first trace of the dataset looks horizontal
@@ -113,6 +124,8 @@
 parallelPlot <- function(
   data,
   categorical = NULL,
+  categoriesRep = "EquallySpacedLines",
+  arrangeMethod = "fromRight",
   inputColumns = NULL,
   keptColumns = NULL,
   histoVisibility = NULL,
@@ -139,6 +152,8 @@ parallelPlot <- function(
       data = data,
       rowLabels = rownames(data),
       categorical = categorical,
+      categoriesRep = categoriesRep,
+      arrangeMethod = arrangeMethod,
       inputColumns = inputColumns,
       keptColumns = keptColumns,
       histoVisibility = histoVisibility,
@@ -185,8 +200,12 @@ checkArgs <- function(args) {
                           checkHistoVisibility(
                             checkInputColumns(
                               checkKeptColumns(
-                                checkCategorical(
-                                  checkData(args)
+                                checkArrangeMethod(
+                                  checkCategoriesRep(
+                                    checkCategorical(
+                                      checkData(args)
+                                    )
+                                  )
                                 )
                               )
                             )
@@ -250,6 +269,34 @@ checkCategorical <- function(args) {
       return(NULL)
     })
     args["categorical"] <- list(categorical)
+  }
+  return(args)
+}
+
+checkCategoriesRep <- function(args) {
+  categoriesRepList <- c("EquallySpacedLines", "EquallySizedBoxes")
+  if (is.na(match(args$categoriesRep, categoriesRepList))) {
+    message(paste(
+      "categoriesRep:",
+      args$categoriesRep,
+      "must be a valid categories representation type, it must be one of:",
+      toString(categoriesRepList)
+    ))
+    args$categoriesRep <- categoriesRepList[1]
+  }
+  return(args)
+}
+
+checkArrangeMethod <- function(args) {
+  arrangeMethodList <- c("fromLeft", "fromRight", "fromBoth", "fromNone")
+  if (is.na(match(args$arrangeMethod, arrangeMethodList))) {
+    message(paste(
+      "arrangeMethod:",
+      args$arrangeMethod,
+      "must be a valid arrange method, it must be one of:",
+      toString(arrangeMethodList)
+    ))
+    args$arrangeMethod <- arrangeMethodList[1]
   }
   return(args)
 }
@@ -561,7 +608,115 @@ renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
   htmlwidgets::shinyRenderWidget(expr, parallelPlotOutput, env, quoted = TRUE)
 }
 
-#' Traces colors
+#' Lines position
+#'
+#' Within a category box:
+#'   the position of lines can be calculated to minimize crossings on the left of the box (\code{fromLeft});
+#'   the position of lines can be calculated to minimize crossings on the right (\code{fromRight}, default behavior);
+#'   lines can be split in two points to minimize crossings on the left and on the right (\code{fromBoth}).
+#'   To turn this ordering off (for example for performance reasons),
+#'   `arrangeMethod` can also be set to \code{fromNone}.
+#'
+#' @param id
+#'   Output variable to read from (id which references the requested plot).
+#' @param arrangeMethod
+#'   One of the available arrange methods ("fromLeft", "fromRight", "fromBoth", "fromNone").
+#'
+#' @return No return value, called from shiny applications for side effects.
+#'
+#' @examples
+#'  if(interactive() && require(shiny)) {
+#'    library(shiny)
+#'    library(parallelPlot)
+#'
+#'    ui <- fluidPage(
+#'        selectInput(
+#'          "arrangeMethodSelect",
+#'          "Arrange Method:",
+#'          choices = list(
+#'            "fromLeft" = "fromLeft", "fromRight" = "fromRight",
+#'            "fromBoth" = "fromBoth", "fromNone" = "fromNone"
+#'          ),
+#'          selected = "fromRight"
+#'        ),
+#'        p("The selector controls the method used to arrange lines position in category boxes"),
+#'        parallelPlotOutput("parPlot")
+#'    )
+#'
+#'    server <- function(input, output, session) {
+#'        output$parPlot <- renderParallelPlot({
+#'            categorical <- list(
+#'                NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8
+#'            )
+#'            parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
+#'        })
+#'        observeEvent(input$arrangeMethodSelect, {
+#'            parallelPlot::setArrangeMethod("parPlot", input$arrangeMethodSelect)
+#'        })
+#'    }
+#'
+#'    shinyApp(ui, server)
+#'  }
+#'
+#' @export
+setArrangeMethod <- function(id, arrangeMethod) {
+  method <- "setArrangeMethod" # nolint
+  callJS()
+}
+
+#' Categories Representation
+#'
+#'   Within a category column, the height assigned to each category can either be:
+#'   equal for each category (\code{EquallySizedBoxes});
+#'   or calculated to reflect the proportion of lines passing through each category (\code{EquallySpacedLines}).
+#'
+#' @param id
+#'   Output variable to read from (id which references the requested plot).
+#' @param categoriesRep
+#'   One of the available category representations ("EquallySpacedLines", "EquallySizedBoxes").
+#'
+#' @return No return value, called from shiny applications for side effects.
+#'
+#' @examples
+#'  if(interactive() && require(shiny)) {
+#'    library(shiny)
+#'    library(parallelPlot)
+#'
+#'    ui <- fluidPage(
+#'        selectInput(
+#'          "categoriesRepSelect",
+#'          "Categories Representation:",
+#'          choices = list(
+#'            "EquallySpacedLines" = "EquallySpacedLines", "EquallySizedBoxes" = "EquallySizedBoxes"
+#'          ),
+#'          selected = "EquallySpacedLines"
+#'        ),
+#'        p("The selector controls the the height assigned to each category"),
+#'        parallelPlotOutput("parPlot")
+#'    )
+#'
+#'    server <- function(input, output, session) {
+#'        output$parPlot <- renderParallelPlot({
+#'            categorical <- list(
+#'                NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8
+#'            )
+#'            parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
+#'        })
+#'        observeEvent(input$categoriesRepSelect, {
+#'            parallelPlot::setCategoriesRep("parPlot", input$categoriesRepSelect)
+#'        })
+#'    }
+#'
+#'    shinyApp(ui, server)
+#'  }
+#'
+#' @export
+setCategoriesRep <- function(id, categoriesRep) {
+  method <- "setCategoriesRep" # nolint
+  callJS()
+}
+
+#' Lines colors
 #'
 #' Tells which color scale to use when reference column is of type continuous.
 #'
@@ -580,7 +735,7 @@ renderParallelPlot <- function(expr, env = parent.frame(), quoted = FALSE) {
 #' @return No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -622,7 +777,7 @@ setContinuousColorScale <- function(id, continuousCsId) {
   callJS()
 }
 
-#' Traces colors
+#' Lines colors
 #'
 #' Tells which color scale to use when reference column is of type categorical.
 #'
@@ -639,7 +794,7 @@ setContinuousColorScale <- function(id, continuousCsId) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -684,7 +839,7 @@ setCategoricalColorScale <- function(id, categoricalCsId) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -728,7 +883,7 @@ setHistoVisibility <- function(id, histoVisibility) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -761,7 +916,7 @@ setInvertedAxes <- function(id, invertedAxes) {
 #'
 #' Tells which cutoffs to use for each column.
 #'
-#' It's possible to filter some traces by defining cutoffs to apply to columns.
+#' It's possible to filter some lines by defining cutoffs to apply to columns.
 #'
 #' @param id
 #'   output variable to read from (id which references the requested plot)
@@ -777,14 +932,14 @@ setInvertedAxes <- function(id, invertedAxes) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
 #'        sliderInput("brushSlider", "Brush for 'Sepal.Length' column:",
 #'            min = 4, max = 8, step = 0.1, value = c(4, 8)),
-#'        p("The slider controls the rows which are kept by cutoff (others are greyed)"),
+#'        p("The slider controls the rows which are kept by cutoff (others are shaded)"),
 #'        parallelPlotOutput("parPlot")
 #'    )
 #'
@@ -822,7 +977,7 @@ setCutoffs <- function(id, cutoffs) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -875,12 +1030,12 @@ setKeptColumns <- function(id, keptColumns) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
 #'    ui <- fluidPage(
-#'        actionButton("getSelectedTracesAction", "Retrieve Selected Traces"),
+#'        actionButton("getSelectedTracesAction", "Retrieve Selected Lines"),
 #'        p("The button displays the list of uncutted rows (use brush to reduce it)"),
 #'        parallelPlotOutput("parPlot")
 #'    )
@@ -895,7 +1050,7 @@ setKeptColumns <- function(id, keptColumns) {
 #'        })
 #'        observeEvent(input$MySelectedTraces, {
 #'            showModal(modalDialog(
-#'                title = "Selected Traces",
+#'                title = "Selected Lines",
 #'                toString(input$MySelectedTraces)
 #'            ))
 #'        })
@@ -925,7 +1080,7 @@ getValue <- function(id, attrType, valueInputId) {
 #'   No return value, called from shiny applications for side effects.
 #'
 #' @examples
-#'  if(interactive()) {
+#'  if(interactive() && require(shiny)) {
 #'    library(shiny)
 #'    library(parallelPlot)
 #'
@@ -965,6 +1120,64 @@ changeRow <- function(id, rowIndex, newValues) {
 #'
 #' @return
 #'   No return value, called from shiny applications for side effects.
+#'
+#' @examples
+#' \dontrun{
+#'    library(shiny)
+#'    library(shinyjs)
+#'    library(parallelPlot)
+#'
+#'    ui <- fluidPage(
+#'        useShinyjs(),
+#'        p("The button allows to save the widget as an html file, reproducing its configuration"),
+#'        actionButton("downloadButton", "Download Widget"),
+#'        downloadButton("associatedDownloadButton", "Download Widget",
+#'            style = "visibility: hidden;"
+#'        ),
+#'        parallelPlotOutput("parPlot")
+#'    )
+#'
+#'    server <- function(input, output, session) {
+#'        output$parPlot <- renderParallelPlot({
+#'            parallelPlot(iris)
+#'        })
+#'        observeEvent(input$downloadButton, {
+#'            parallelPlot::getPlotConfig("parPlot", "ConfigForDownload")
+#'        })
+#'        observeEvent(input$ConfigForDownload, {
+#'          ppForDownload <<- parallelPlot(
+#'            data = iris,
+#'            categorical = input$ConfigForDownload$categorical,
+#'            categoriesRep = input$ConfigForDownload$categoriesRep,
+#'            arrangeMethod = input$ConfigForDownload$arrangeMethod,
+#'            inputColumns = input$ConfigForDownload$inputColumns,
+#'            keptColumns = input$ConfigForDownload$keptColumns,
+#'            histoVisibility = input$ConfigForDownload$histoVisibility,
+#'            invertedAxes = input$ConfigForDownload$invertedAxes,
+#'            cutoffs = input$ConfigForDownload$cutoffs,
+#'            refRowIndex = input$ConfigForDownload$refRowIndex,
+#'            refColumnDim = input$ConfigForDownload$refColumnDim,
+#'            rotateTitle = input$ConfigForDownload$rotateTitle,
+#'            columnLabels = input$ConfigForDownload$columnLabels,
+#'            continuousCS = input$ConfigForDownload$continuousCS,
+#'            categoricalCS = input$ConfigForDownload$categoricalCS,
+#'            controlWidgets = NULL,
+#'            cssRules = input$ConfigForDownload$cssRules
+#'          )
+#'          shinyjs::runjs("document.getElementById('associatedDownloadButton').click();")
+#'        })
+#'        output$associatedDownloadButton <- downloadHandler(
+#'          filename = function() {
+#'            paste("parallelPlot-", Sys.Date(), ".html", sep = "")
+#'          },
+#'          content = function(tmpContentFile) {
+#'            htmlwidgets::saveWidget(ppForDownload, tmpContentFile)
+#'          }
+#'        )
+#'    }
+#'
+#'    shinyApp(ui, server)
+#'  }
 #'
 #' @export
 getPlotConfig <- function(id, configInputId) {

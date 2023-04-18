@@ -23,17 +23,17 @@ No return value, called from shiny applications for side effects.
 Tells which cutoffs to use for each column.
 }
 \details{
-It's possible to filter some traces by defining cutoffs to apply to columns.
+It's possible to filter some lines by defining cutoffs to apply to columns.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 
    ui <- fluidPage(
        sliderInput("brushSlider", "Brush for 'Sepal.Length' column:",
            min = 4, max = 8, step = 0.1, value = c(4, 8)),
-       p("The slider controls the rows which are kept by cutoff (others are greyed)"),
+       p("The slider controls the rows which are kept by cutoff (others are shaded)"),
        parallelPlotOutput("parPlot")
    )
 

@@ -24,12 +24,12 @@ Available attributes are 'Cutoffs', 'SelectedTraces' and 'ReferenceColumn'.
 Result will be sent through a reactive input.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 
    ui <- fluidPage(
-       actionButton("getSelectedTracesAction", "Retrieve Selected Traces"),
+       actionButton("getSelectedTracesAction", "Retrieve Selected Lines"),
        p("The button displays the list of uncutted rows (use brush to reduce it)"),
        parallelPlotOutput("parPlot")
    )
@@ -44,7 +44,7 @@ Result will be sent through a reactive input.
        })
        observeEvent(input$MySelectedTraces, {
            showModal(modalDialog(
-               title = "Selected Traces",
+               title = "Selected Lines",
                toString(input$MySelectedTraces)
            ))
        })

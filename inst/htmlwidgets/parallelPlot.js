@@ -24,7 +24,7 @@ HTMLWidgets.widget({
 
                 // If htmlwidget is included in Shiny app, listen JavaScript messages sent from Shiny
                 if (HTMLWidgets.shinyMode) {
-                    ["setContinuousColorScale", "setCategoricalColorScale", "setHistoVisibility", "setInvertedAxes", "setCutoffs", "setKeptColumns", "getValue", "changeRow", "getPlotConfig"].forEach(func => {
+                    ["setArrangeMethod", "setCategoriesRep", "setContinuousColorScale", "setCategoricalColorScale", "setHistoVisibility", "setInvertedAxes", "setCutoffs", "setKeptColumns", "getValue", "changeRow", "getPlotConfig"].forEach(func => {
                         Shiny.addCustomMessageHandler("parallelPlot:" + func, function(message) {
                             var el = document.getElementById(message.id);
                             if (el) {
@@ -67,6 +67,8 @@ HTMLWidgets.widget({
                     data: HTMLWidgets.dataframeToD3(config.data),
                     rowLabels: config.rowLabels,
                     categorical: config.categorical,
+                    categoriesRep: config.categoriesRep,
+                    arrangeMethod: config.arrangeMethod,
                     inputColumns: config.inputColumns,
                     keptColumns: config.keptColumns,
                     histoVisibility : config.histoVisibility,
@@ -84,6 +86,14 @@ HTMLWidgets.widget({
                     sliderPosition: sliderPosition
                 });
             }, // End 'renderValue'
+
+            setArrangeMethod: function(params) {
+                parallelPlot.setArrangeMethod(params.arrangeMethod);
+            },
+
+            setCategoriesRep: function(params) {
+                parallelPlot.setCategoriesRep(params.categoriesRep);
+            },
 
             setContinuousColorScale: function(params) {
                 parallelPlot.setContinuousColorScale(params.continuousCsId);

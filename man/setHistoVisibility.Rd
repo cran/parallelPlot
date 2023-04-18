@@ -20,7 +20,7 @@ No return value, called from shiny applications for side effects.
 Tells which columns have to be displayed with histograms.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/parallelPlot.R
 \name{setCategoricalColorScale}
 \alias{setCategoricalColorScale}
-\title{Traces colors}
+\title{Lines colors}
 \usage{
 setCategoricalColorScale(id, categoricalCsId)
 }
@@ -23,7 +23,7 @@ a color scale is associated to this column.
 Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 

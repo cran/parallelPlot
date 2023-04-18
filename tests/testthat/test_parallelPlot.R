@@ -112,6 +112,56 @@ describe("options", {
         })
     })
 
+    # ***********************
+    # 'categoriesRep' argument
+    # ***********************
+    describe("categoriesRep", {
+        categoriesRepList <- c("EquallySpacedLines", "EquallySizedBoxes")
+        for (cr in categoriesRepList) {
+            it(paste("should keep unchanged a valid value", cr), {
+                expect_equal(
+                    parallelPlot(mtcars, categoriesRep = cr)$x$categoriesRep,
+                    cr
+                )
+            })
+        }
+        it("should fix invalid value and print a message", {
+            expect_message(
+                out <- parallelPlot(mtcars, categoriesRep = 1),
+                paste("must be a valid categories representation type, it must be one of:", toString(categoriesRepList))
+            )
+            expect_equal(
+                out$x$categoriesRep,
+                categoriesRepList[1]
+            )
+        })
+    })
+
+    # ***********************
+    # 'arrangeMethod' argument
+    # ***********************
+    describe("arrangeMethod", {
+        arrangeMethodList <- c("fromLeft", "fromRight", "fromBoth", "fromNone")
+        for (cr in arrangeMethodList) {
+            it(paste("should keep unchanged a valid value", cr), {
+                expect_equal(
+                    parallelPlot(mtcars, arrangeMethod = cr)$x$arrangeMethod,
+                    cr
+                )
+            })
+        }
+        it("should fix invalid value and print a message", {
+            expect_message(
+                out <- parallelPlot(mtcars, arrangeMethod = 1),
+                paste("must be a valid arrange method, it must be one of:", toString(arrangeMethodList))
+            )
+            expect_equal(
+                out$x$arrangeMethod,
+                arrangeMethodList[1]
+            )
+        })
+    })
+
     # **********************
     # 'keptColumns' argument
     # **********************

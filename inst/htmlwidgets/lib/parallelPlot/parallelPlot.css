@@ -28,22 +28,23 @@
     cursor: pointer;
 }
 
-.parallelPlot .catGroup rect.category {
+.parallelPlot .category rect.box {
     stroke: black;
     stroke-opacity: 0.6;
     shape-rendering: "crispEdges";
     cursor : pointer
 }
 
-.parallelPlot .catGroup rect.category.active {
+.parallelPlot .category rect.box.active {
     opacity: 1;
 }
 
-.parallelPlot .catGroup rect.category.inactive {
+.parallelPlot .category rect.box.inactive {
     opacity: 0.3;
 }
 
-.parallelPlot .axisGroup text {
+.parallelPlot .axisGroup text,
+.parallelPlot .category text {
     fill: black;
     text-shadow: 0 1px 0 #D0D0D0, 1px 0 0 #D0D0D0, 0 -1px 0 #D0D0D0, -1px 0 0 #D0D0D0;
 }

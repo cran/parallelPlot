@@ -32,6 +32,18 @@ parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
 
 ## -----------------------------------------------------------------------------
 categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", categoriesRep = "EquallySizedBoxes")
+
+## -----------------------------------------------------------------------------
+categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromLeft")
+
+## -----------------------------------------------------------------------------
+categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromBoth")
+
+## -----------------------------------------------------------------------------
+categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
 inputColumns <- c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
 parallelPlot(mtcars, categorical = categorical, inputColumns = inputColumns, refColumnDim = "cyl")
 
@@ -62,7 +74,11 @@ parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
 ## -----------------------------------------------------------------------------
 parallelPlot(iris, cssRules = list(
     "svg" = "background: white", # Set background of plot to white
-    ".tick text" = c("fill: red", "font-size: 1.8em") # Set text of axes ticks red and greater
+    ".axisLabel" = c("fill: red", "font-size: 1.8em"), # Set title of axes red and greater
+    ".tick text" = "font-size: 1.8em", # Set text of axes ticks greater
+    ".plotGroup path" = "opacity: 0.25", # Make lines less opaque
+    ".xValue" = "color: orange", # Set color for x values in tooltip
+    ".xName" = "display: table" # Trick to have x values on a new line
 ))
 
 ## -----------------------------------------------------------------------------

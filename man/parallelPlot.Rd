@@ -7,6 +7,8 @@
 parallelPlot(
   data,
   categorical = NULL,
+  categoriesRep = "EquallySpacedLines",
+  arrangeMethod = "fromRight",
   inputColumns = NULL,
   keptColumns = NULL,
   histoVisibility = NULL,
@@ -34,6 +36,17 @@ parallelPlot(
 \item{categorical}{List of list (one for each data column) containing the name of available categories,
 or \code{NULL} if column corresponds to continuous data;
 \code{NULL} is allowed, meaning all columns are continuous.}
+
+\item{categoriesRep}{Within a category column, the height assigned to each category can either be:
+equal for each category (\code{EquallySizedBoxes});
+or calculated to reflect the proportion of lines passing through each category (\code{EquallySpacedLines}).}
+
+\item{arrangeMethod}{Within a category box:
+the position of lines can be calculated to minimize crossings on the left of the box (\code{fromLeft});
+the position of lines can be calculated to minimize crossings on the right (\code{fromRight}, default behavior);
+lines can be split in two points to minimize crossings on the left and on the right (\code{fromBoth}).
+To turn this ordering off (for example for performance reasons),
+`arrangeMethod` can also be set to \code{fromNone}.}
 
 \item{inputColumns}{List of boolean (one for each data column), \code{TRUE} for an input column, \code{FALSE} for an output column;
 \code{NULL} is allowed, meaning all columns are inputs.}
@@ -122,7 +135,7 @@ htmlwidget for d3.js parallel coordinate plot
    histoVisibility <- rep(TRUE, ncol(iris))
    cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
    parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
-   # Cut traces are greyed; an histogram is displayed considering only kept traces
+   # Cut lines are shaded; an histogram is displayed considering only kept lines
 
    parallelPlot(iris, refRowIndex = 1)
    # Axes are shifted vertically in such a way that first trace of the dataset looks horizontal

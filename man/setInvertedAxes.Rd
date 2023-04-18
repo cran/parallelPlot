@@ -20,7 +20,7 @@ No return value, called from shiny applications for side effects.
 Tells which axes have to be displayed with an inverted orientation.
 }
 \examples{
- if(interactive()) {
+ if(interactive() && require(shiny)) {
    library(shiny)
    library(parallelPlot)
 

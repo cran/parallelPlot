@@ -1,6 +1,6 @@
 Package: parallelPlot
 Title: 'Htmlwidget' for a Parallel Coordinates Plot
-Version: 0.2.0
+Version: 0.3.1
 Authors@R: c(
     person("Mike", "Bostock", role = c("aut", "cph"), comment = "d3.js library in htmlwidgets/lib, http://d3js.org"),
     person("David", "Chazalviel", email = "david.chazalviel@club-internet.fr", role = c("aut", "cre")),
@@ -17,11 +17,11 @@ Imports: htmlwidgets
 Suggests: testthat, shiny, knitr, rmarkdown
 VignetteBuilder: knitr
 NeedsCompilation: no
-Packaged: 2022-04-12 08:02:08 UTC; chazalda
+Packaged: 2023-04-18 17:01:56 UTC; chazalda
 Author: Mike Bostock [aut, cph] (d3.js library in htmlwidgets/lib,
     http://d3js.org),
   David Chazalviel [aut, cre],
   Benoit Lehman [aut]
 Maintainer: David Chazalviel <david.chazalviel@club-internet.fr>
 Repository: CRAN
-Date/Publication: 2022-04-12 08:10:07 UTC
+Date/Publication: 2023-04-18 17:20:02 UTC

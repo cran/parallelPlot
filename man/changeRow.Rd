@@ -11,7 +11,8 @@ changeRow(id, rowIndex, newValues)
 
 \item{rowIndex}{index of the changed row.}
 
-\item{newValues}{list of new values to attribute to the row (list associating a value to a column identifier).}
+\item{newValues}{list of new values to attribute to the row
+(list associating a value to a column identifier).}
 }
 \value{
 No return value, called from shiny applications for side effects.
@@ -25,21 +26,25 @@ Asks to change a row.
    library(parallelPlot)
 
    ui <- fluidPage(
-       sliderInput("rowValueSlider", "Value for 'Sepal.Length' of first row:",
-           min = 4, max = 8, step = 0.1, value = iris[["Sepal.Length"]][1]),
-       p("The slider controls the new value to assign to the 'Sepal.Length' of the first row"),
-       parallelPlotOutput("parPlot")
+     sliderInput(
+       "rowValueSlider",
+       "Value for 'Sepal.Length' of first row:",
+       min = 4, max = 8, step = 0.1,
+       value = iris[["Sepal.Length"]][1]
+     ),
+     p("Slider controls the new value to assign to 'Sepal.Length' of the first row"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           parallelPlot(iris)
-       })
-       observeEvent(input$rowValueSlider, {
-           newValues <- iris[1,]
-           newValues[["Sepal.Length"]] <- input$rowValueSlider
-           parallelPlot::changeRow("parPlot", 1, newValues)
-       })
+     output$parPlot <- renderParallelPlot({
+       parallelPlot(iris)
+     })
+     observeEvent(input$rowValueSlider, {
+       newValues <- iris[1,]
+       newValues[["Sepal.Length"]] <- input$rowValueSlider
+       parallelPlot::changeRow("parPlot", 1, newValues)
+     })
    }
 
    shinyApp(ui, server)

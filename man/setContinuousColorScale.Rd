@@ -10,9 +10,10 @@ setContinuousColorScale(id, continuousCsId)
 \item{id}{Output variable to read from (id which references the requested plot).}
 
 \item{continuousCsId}{One of the available color scale ids
-("Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault",
- "Blues","Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd",
- "PuBuGn","PuBu", "PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd").}
+(\code{Viridis}, \code{Inferno}, \code{Magma}, \code{Plasma}, \code{Warm}, \code{Cool}, \code{Rainbow},
+\code{CubehelixDefault}, \code{Blues},\code{Greens}, \code{Greys}, \code{Oranges}, \code{Purples},
+\code{Reds}, \code{BuGn}, \code{BuPu}, \code{GnBu}, \code{OrRd}, \code{PuBuGn},\code{PuBu}, \code{PuRd}, \code{RdBu},
+\code{RdPu}, \code{YlGnBu}, \code{YlGn}, \code{YlOrBr}, \code{YlOrRd}).}
 }
 \value{
 No return value, called from shiny applications for side effects.
@@ -23,7 +24,7 @@ Tells which color scale to use when reference column is of type continuous.
 \details{
 If a column is defined as the reference (for example by clicking on its header),
 a color scale is associated to this column.
-Available color scale ids are: `Blues`, `RdBu`, `YlGnBu`, `YlOrRd`, `Reds`.
+Available color scale ids are: \code{Blues}, \code{RdBu}, \code{YlGnBu}, \code{YlOrRd}, \code{Reds}.
 }
 \examples{
  if(interactive() && require(shiny)) {
@@ -31,23 +32,23 @@ Available color scale ids are: `Blues`, `RdBu`, `YlGnBu`, `YlOrRd`, `Reds`.
    library(parallelPlot)
 
    ui <- fluidPage(
-       selectInput(
-         "continuousCsSelect",
-         "Continuous Color Scale:",
-         choices = list(
-           "Viridis" = "Viridis", "Inferno" = "Inferno", "Magma" = "Magma",
-           "Plasma" = "Plasma", "Warm" = "Warm", "Cool" = "Cool", "Rainbow" ="Rainbow",
-           "CubehelixDefault" = "CubehelixDefault", "Blues" = "Blues",
-           "Greens" = "Greens", "Greys" = "Greys", "Oranges" = "Oranges",
-           "Purples" = "Purples", "Reds" = "Reds", "BuGn" = "BuGn", "BuPu" = "BuPu",
-           "GnBu" = "GnBu", "OrRd" = "OrRd", "PuBuGn" = "PuBuGn", "PuBu" = "PuBu",
-           "PuRd" = "PuRd", "RdBu" = "RdBu", "RdPu" = "RdPu", "YlGnBu" = "YlGnBu",
-           "YlGn" = "YlGn", "YlOrBr" = "YlOrBr", "YlOrRd" = "YlOrRd"
-         ),
-         selected = "Viridis"
+     selectInput(
+       "continuousCsSelect",
+       "Continuous Color Scale:",
+       choices = list(
+         "Viridis" = "Viridis", "Inferno" = "Inferno", "Magma" = "Magma",
+         "Plasma" = "Plasma", "Warm" = "Warm", "Cool" = "Cool", "Rainbow" ="Rainbow",
+         "CubehelixDefault" = "CubehelixDefault", "Blues" = "Blues",
+         "Greens" = "Greens", "Greys" = "Greys", "Oranges" = "Oranges",
+         "Purples" = "Purples", "Reds" = "Reds", "BuGn" = "BuGn", "BuPu" = "BuPu",
+         "GnBu" = "GnBu", "OrRd" = "OrRd", "PuBuGn" = "PuBuGn", "PuBu" = "PuBu",
+         "PuRd" = "PuRd", "RdBu" = "RdBu", "RdPu" = "RdPu", "YlGnBu" = "YlGnBu",
+         "YlGn" = "YlGn", "YlOrBr" = "YlOrBr", "YlOrRd" = "YlOrRd"
        ),
-       p("The selector controls the colors used when reference column is of type continuous"),
-       parallelPlotOutput("parPlot")
+       selected = "Viridis"
+     ),
+     p("Selector controls used colors when reference column is of type continuous"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {

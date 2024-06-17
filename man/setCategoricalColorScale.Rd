@@ -20,7 +20,7 @@ Tells which color scale to use when reference column is of type categorical.
 \details{
 If a column is defined as the reference (for example by clicking on its header),
 a color scale is associated to this column.
-Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`.
+Available color scale ids are: \code{Category10}, \code{Accent}, \code{Dark2}, \code{Paired}, \code{Set1}.
 }
 \examples{
  if(interactive() && require(shiny)) {
@@ -28,20 +28,24 @@ Available color scale ids are: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`
    library(parallelPlot)
 
    ui <- fluidPage(
-       selectInput("categoricalCsSelect", "Categorical Color Scale:",
-           choices = list("Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2",
-                           "Paired" = "Paired", "Set1" = "Set1"), selected = "Category10"),
-       p("The selector controls the colors used when reference column is of type categorical"),
-       parallelPlotOutput("parPlot")
+     selectInput("categoricalCsSelect", "Categorical Color Scale:",
+       choices = list(
+         "Category10" = "Category10", "Accent" = "Accent", "Dark2" = "Dark2",
+         "Paired" = "Paired", "Set1" = "Set1"
+       ),
+       selected = "Category10"
+     ),
+     p("Selector controls used colors when reference column is of type categorical"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           parallelPlot(data = iris, refColumnDim = "Species")
-       })
-       observeEvent(input$categoricalCsSelect, {
-           parallelPlot::setCategoricalColorScale("parPlot", input$categoricalCsSelect)
-       })
+     output$parPlot <- renderParallelPlot({
+       parallelPlot(data = iris, refColumnDim = "Species")
+     })
+     observeEvent(input$categoricalCsSelect, {
+       parallelPlot::setCategoricalColorScale("parPlot", input$categoricalCsSelect)
+     })
    }
 
    shinyApp(ui, server)

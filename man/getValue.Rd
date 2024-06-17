@@ -20,7 +20,7 @@ No return value, called from shiny applications for side effects.
 Asks to retrieve the value of an attribute.
 }
 \details{
-Available attributes are 'Cutoffs', 'SelectedTraces' and 'ReferenceColumn'.
+Available attributes are \code{Cutoffs}, \code{SelectedTraces} and \code{ReferenceColumn}.
 Result will be sent through a reactive input.
 }
 \examples{
@@ -29,25 +29,25 @@ Result will be sent through a reactive input.
    library(parallelPlot)
 
    ui <- fluidPage(
-       actionButton("getSelectedTracesAction", "Retrieve Selected Lines"),
-       p("The button displays the list of uncutted rows (use brush to reduce it)"),
-       parallelPlotOutput("parPlot")
+     actionButton("getSelectedTracesAction", "Retrieve Selected Lines"),
+     p("The button displays the list of uncutted rows (use brush to reduce it)"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           parallelPlot(iris)
-       })
-       observeEvent(input$getSelectedTracesAction, {
-           attributeType <- "SelectedTraces"
-           parallelPlot::getValue("parPlot", attributeType, "MySelectedTraces")
-       })
-       observeEvent(input$MySelectedTraces, {
-           showModal(modalDialog(
-               title = "Selected Lines",
-               toString(input$MySelectedTraces)
-           ))
-       })
+     output$parPlot <- renderParallelPlot({
+       parallelPlot(iris)
+     })
+     observeEvent(input$getSelectedTracesAction, {
+       attributeType <- "SelectedTraces"
+       parallelPlot::getValue("parPlot", attributeType, "MySelectedTraces")
+     })
+     observeEvent(input$MySelectedTraces, {
+       showModal(modalDialog(
+         title = "Selected Lines",
+         toString(input$MySelectedTraces)
+       ))
+     })
    }
 
    shinyApp(ui, server)

@@ -11,7 +11,8 @@ setHistoVisibility(id, histoVisibility)
 
 \item{histoVisibility}{Vector of boolean (one for each data column), \code{TRUE} if an histogram must be displayed;
 \code{NULL} is allowed, meaning no histogram must be displayed.
-A named list can also be provided to only indicate which columns must be assigned to a new display.}
+A named list can also be provided to only indicate which columns must be assigned
+to a new display.}
 }
 \value{
 No return value, called from shiny applications for side effects.
@@ -25,19 +26,19 @@ Tells which columns have to be displayed with histograms.
    library(parallelPlot)
 
    ui <- fluidPage(
-       checkboxInput("histCB", "Histogram Visibility", FALSE),
-       p("The check box controls the visibility of histograms"),
-       parallelPlotOutput("parPlot")
+     checkboxInput("histCB", "Histogram Visibility", FALSE),
+     p("The check box controls the visibility of histograms"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           parallelPlot(iris)
-       })
-       observeEvent(input$histCB, {
-           histoVisibility <- rep(input$histCB, ncol(iris))
-           parallelPlot::setHistoVisibility("parPlot", histoVisibility)
-       })
+     output$parPlot <- renderParallelPlot({
+       parallelPlot(iris)
+     })
+     observeEvent(input$histCB, {
+       histoVisibility <- rep(input$histCB, ncol(iris))
+       parallelPlot::setHistoVisibility("parPlot", histoVisibility)
+     })
    }
 
    shinyApp(ui, server)

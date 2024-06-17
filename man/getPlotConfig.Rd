@@ -2,8 +2,7 @@
 % Please edit documentation in R/parallelPlot.R
 \name{getPlotConfig}
 \alias{getPlotConfig}
-\title{Asks to retrieve the plot configuration.
-Result will be sent through a reactive input.}
+\title{Retrieve plot configuration}
 \usage{
 getPlotConfig(id, configInputId)
 }
@@ -16,31 +15,31 @@ getPlotConfig(id, configInputId)
 No return value, called from shiny applications for side effects.
 }
 \description{
-Asks to retrieve the plot configuration.
-Result will be sent through a reactive input.
+Result will be sent through a reactive input (see example below).
 }
 \examples{
 \dontrun{
-   library(shiny)
-   library(shinyjs)
-   library(parallelPlot)
+   if(interactive() && require(shiny)) {
+     library(shiny)
+     library(shinyjs)
+     library(parallelPlot)
 
-   ui <- fluidPage(
+     ui <- fluidPage(
        useShinyjs(),
-       p("The button allows to save the widget as an html file, reproducing its configuration"),
+       p("Use button to save widget as an html file, reproducing its configuration"),
        actionButton("downloadButton", "Download Widget"),
        downloadButton("associatedDownloadButton", "Download Widget",
-           style = "visibility: hidden;"
+         style = "visibility: hidden;"
        ),
        parallelPlotOutput("parPlot")
-   )
+     )
 
-   server <- function(input, output, session) {
+     server <- function(input, output, session) {
        output$parPlot <- renderParallelPlot({
-           parallelPlot(iris)
+         parallelPlot(iris)
        })
        observeEvent(input$downloadButton, {
-           parallelPlot::getPlotConfig("parPlot", "ConfigForDownload")
+         parallelPlot::getPlotConfig("parPlot", "ConfigForDownload")
        })
        observeEvent(input$ConfigForDownload, {
          ppForDownload <<- parallelPlot(
@@ -60,7 +59,8 @@ Result will be sent through a reactive input.
            continuousCS = input$ConfigForDownload$continuousCS,
            categoricalCS = input$ConfigForDownload$categoricalCS,
            controlWidgets = NULL,
-           cssRules = input$ConfigForDownload$cssRules
+           cssRules = input$ConfigForDownload$cssRules,
+           sliderPosition = input$ConfigForDownload$sliderPosition
          )
          shinyjs::runjs("document.getElementById('associatedDownloadButton').click();")
        })
@@ -72,9 +72,10 @@ Result will be sent through a reactive input.
            htmlwidgets::saveWidget(ppForDownload, tmpContentFile)
          }
        )
-   }
+     }
 
-   shinyApp(ui, server)
+     shinyApp(ui, server)
+   }
  }
 
 }

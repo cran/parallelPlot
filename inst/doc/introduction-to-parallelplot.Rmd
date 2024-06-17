@@ -41,7 +41,8 @@ Each trace has a color depending of its 'species' value.
 parallelPlot(iris, refColumnDim = "Species", categoricalCS = "Set1")
 ```
 
-Colors used for categories are not the same as previously (supported values: Category10, Accent, Dark2, Paired, Set1).
+Colors used for categories are not the same as previously
+(supported values: `Category10`, `Accent`, `Dark2`, `Paired`, `Set1`).
 
 ## `refColumnDim` argument (referenced column is continuous)
 
@@ -57,7 +58,7 @@ Each trace has a color depending of its 'Sepal.Length' value.
 parallelPlot(iris, refColumnDim = "Sepal.Length", continuousCS = "YlOrRd")
 ```
 
-Colors used for lines are not the same as previously. Supported values: "Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault", "Blues","Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd", "PuBuGn","PuBu", "PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd")
+Colors used for lines are not the same as previously. Supported values: `Viridis`, `Inferno`, `Magma`, `Plasma`, `Warm`, `Cool`, `Rainbow`, `CubehelixDefault`, `Blues`, `Greens`, `Greys`, `Oranges`, `Purples`, `Reds`, `BuGn`, `BuPu`, `GnBu`, `OrRd`, `PuBuGn`, `PuBu`, `PuRd`, `RdBu`, `RdPu`, `YlGnBu`, `YlGn`, `YlOrBr`, `YlOrRd`
 
 ## Basic usage (dataset doesn't use `factor` type)
 
@@ -65,22 +66,27 @@ Colors used for lines are not the same as previously. Supported values: "Viridis
 parallelPlot(mtcars)
 ```
 
-Several columns are of numerical type but should be of factor type (for example 'cyl').
+Several columns are of numerical type but should be of factor type (for example `cyl`).
 
 ## `categorical` argument
 
 ```{r}
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
 parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
 ```
 
-'cyl' and four last columns have a box representation for its categories.
+`cyl` and four last columns have a box representation for categories.
 
 ## `categoriesRep` argument
 
 ```{r}
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", categoriesRep = "EquallySizedBoxes")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  categoriesRep = "EquallySizedBoxes"
+)
 ```
 
 Within a category column, the height assigned to each category can either be equal for each category (`EquallySizedBoxes`) or calculated to reflect the proportion of lines passing through each category (`EquallySpacedLines`).
@@ -88,17 +94,27 @@ Within a category column, the height assigned to each category can either be equ
 ## `arrangeMethod` argument
 
 ```{r}
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromLeft")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  arrangeMethod = "fromLeft"
+)
 ```
 
-Within a category box, the position of lines is computed to minimize crossings on the left of the box. `arrangeMethod` can also be set to `fromRight` to minimize crossings on the left of the box (default behavior). 'fromBoth' allows to merge the two behaviors (see next example). To turn this ordering off (for example for performance reasons), `arrangeMethod` can also be set to `fromNone`.
+Within a category box, the position of lines is computed to minimize crossings on the left of the box. `arrangeMethod` can also be set to `fromRight` to minimize crossings on the left of the box (default behavior). `fromBoth` allows to merge the two behaviors (see next example). To turn this ordering off (for example for performance reasons), `arrangeMethod` can also be set to `fromNone`.
 
 ## `arrangeMethod` argument (using `fromBoth`)
 
 ```{r}
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromBoth")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  arrangeMethod = "fromBoth"
+)
 ```
 
 Within a category box, lines have an incoming point and an outgoing point; these points are ordered to minimize crossings on the left and on the right of the box.
@@ -106,9 +122,14 @@ Within a category box, lines have an incoming point and an outgoing point; these
 ## `inputColumns` argument
 
 ```{r}
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-inputColumns <- c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
-parallelPlot(mtcars, categorical = categorical, inputColumns = inputColumns, refColumnDim = "cyl")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+inputColumns <- c("mpg", "disp", "drat", "qsec", "am", "gear", "carb")
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  inputColumns = inputColumns,
+  refColumnDim = "cyl"
+)
 ```
 
 The column name is blue for outputs and green for inputs (in shiny mode, inputs can be edited).
@@ -125,22 +146,21 @@ An histogram is displayed for each column.
 ## `invertedAxes` argument
 
 ```{r}
-invertedAxes <- rep(FALSE, ncol(iris))
-invertedAxes[2] <- TRUE
+invertedAxes <- c("Sepal.Width")
 parallelPlot(iris, invertedAxes = invertedAxes)
 ```
 
-Axis of second column is inverted.
+Axis of second column is inverted (a sign '↓' is added at the beginning of the column header).
 
 ## `cutoffs` argument
 
 ```{r}
-histoVisibility <- rep(TRUE, ncol(iris))
-cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
+histoVisibility <- names(iris) # same as `rep(TRUE, ncol(iris))`
+cutoffs <- list(Sepal.Length = list(c(6, 7)), Species = c("virginica", "setosa"))
 parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
 ```
 
-Lines which are not kept by cutoffs are shaded; an histogram is displayed considering only kept lines.
+Lines which are not kept by cutoffs are shaded; an histogram for each column is displayed considering only kept lines.
 
 ## `refRowIndex` argument
 
@@ -171,18 +191,17 @@ Given names are displayed in place of column names found in dataset; `<br>` is u
 
 ```{r}
 parallelPlot(iris, cssRules = list(
-    "svg" = "background: white", # Set background of plot to white
-    ".axisLabel" = c("fill: red", "font-size: 1.8em"), # Set title of axes red and greater
-    ".tick text" = "font-size: 1.8em", # Set text of axes ticks greater
-    ".plotGroup path" = "opacity: 0.25", # Make lines less opaque
-    ".xValue" = "color: orange", # Set color for x values in tooltip
-    ".xName" = "display: table" # Trick to have x values on a new line
+  "svg" = "background: #C2C2C2", # Set background of plot to grey
+  ".axisLabel" = c("fill: red", "font-size: 1.8em"), # Set title of axes red and greater
+  ".tick text" = "font-size: 1.8em", # Set text of axes ticks greater
+  ".plotGroup path" = "opacity: 0.25", # Make lines less opaque
+  ".xValue" = "color: orange", # Set color for x values in tooltip
+  ".xName" = "display: table" # Trick to have x values on a new line
 ))
 ```
 
 Apply CSS to the plot. CSS is a simple way to describe how elements on a web page should be displayed (position, color, size, etc.). 
-You can learn the basics at [W3Schools](https://www.w3schools.com/css/).
-You can learn how to examine and edit css at [MDN Web Docs](https://firefox-source-docs.mozilla.org/devtools-user/page_inspector/how_to/open_the_inspector/index.html) for Firefox or [Chrome devtools](https://developer.chrome.com/docs/devtools/css/) for Chrome.
+See the page [Styling 'parallelPlot'](styling-parallelPlot.html) for more details.
 
 ## `sliderPosition` argument
 
@@ -191,15 +210,14 @@ parallelPlot(iris, sliderPosition = list(
   dimCount = 3, # Number of columns to show
   startingDimIndex = 2 # Index of first shown column
 ))
-# Visible columns starts at second column and three columns are represented.
 ```
 
-Set initial position of slider, specifying which columns interval is visible.
+Visible columns starts at second column and three columns are represented.
 
 ## `controlWidgets` argument
 
 ```{r}
-parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE)
+parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE, height = 350)
 ```
 
-Some widgets are available to control the plot.
+Widgets are added above the graph, allowing to modify some of its attributes.

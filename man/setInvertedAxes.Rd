@@ -9,9 +9,11 @@ setInvertedAxes(id, invertedAxes)
 \arguments{
 \item{id}{output variable to read from (id which references the requested plot)}
 
-\item{invertedAxes}{Vector of boolean (one for each data column), \code{TRUE} if axis orientation must be inverted;
+\item{invertedAxes}{Vector of boolean (one for each data column),
+\code{TRUE} if axis orientation must be inverted;
 \code{NULL} is allowed, meaning no axis must be inverted.
-A named list can also be provided to only indicate which axes must be assigned to a new orientation.}
+A named list can also be provided to only indicate which axes must be assigned
+to a new orientation.}
 }
 \value{
 No return value, called from shiny applications for side effects.
@@ -25,19 +27,19 @@ Tells which axes have to be displayed with an inverted orientation.
    library(parallelPlot)
 
    ui <- fluidPage(
-       checkboxInput("orientationCB", "Axis orientation", FALSE),
-       p("The check box controls the orientation of axes"),
-       parallelPlotOutput("parPlot")
+     checkboxInput("orientationCB", "Axis orientation", FALSE),
+     p("The check box controls the orientation of axes"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           parallelPlot(iris)
-       })
-       observeEvent(input$orientationCB, {
-           invertedAxes <- rep(input$orientationCB, ncol(iris))
-           parallelPlot::setInvertedAxes("parPlot", invertedAxes)
-       })
+     output$parPlot <- renderParallelPlot({
+       parallelPlot(iris)
+     })
+     observeEvent(input$orientationCB, {
+       invertedAxes <- rep(input$orientationCB, ncol(iris))
+       parallelPlot::setInvertedAxes("parPlot", invertedAxes)
+     })
    }
 
    shinyApp(ui, server)

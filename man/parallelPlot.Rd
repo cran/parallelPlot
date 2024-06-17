@@ -2,7 +2,7 @@
 % Please edit documentation in R/parallelPlot.R
 \name{parallelPlot}
 \alias{parallelPlot}
-\title{htmlwidget for d3.js parallel coordinate plot}
+\title{\code{htmlwidget} for \code{d3.js} parallel coordinate plot}
 \usage{
 parallelPlot(
   data,
@@ -31,39 +31,59 @@ parallelPlot(
 )
 }
 \arguments{
-\item{data}{data.frame with data to use in the chart.}
+\item{data}{\code{data.frame} with data to use in the chart.}
 
 \item{categorical}{List of list (one for each data column) containing the name of available categories,
 or \code{NULL} if column corresponds to continuous data;
-\code{NULL} is allowed, meaning all columns are continuous.}
+\code{NULL} is allowed, meaning all columns are continuous.
+A named list can also be provided to only indicate which columns are categorical,
+associating a column name to available categories.}
 
 \item{categoriesRep}{Within a category column, the height assigned to each category can either be:
-equal for each category (\code{EquallySizedBoxes});
-or calculated to reflect the proportion of lines passing through each category (\code{EquallySpacedLines}).}
+\itemize{
+\item equal for each category (\code{EquallySizedBoxes});
+\item or calculated to reflect the proportion of lines passing
+through each category (\code{EquallySpacedLines}).
+}}
 
 \item{arrangeMethod}{Within a category box:
-the position of lines can be calculated to minimize crossings on the left of the box (\code{fromLeft});
-the position of lines can be calculated to minimize crossings on the right (\code{fromRight}, default behavior);
-lines can be split in two points to minimize crossings on the left and on the right (\code{fromBoth}).
+\itemize{
+\item the position of lines can be calculated to minimize
+crossings on the left of the box (\code{fromLeft});
+\item the position of lines can be calculated to minimize
+crossings on the right (\code{fromRight}, default behavior);
+\item lines can be split in two points to minimize
+crossings on the left and on the right (\code{fromBoth}).
 To turn this ordering off (for example for performance reasons),
-`arrangeMethod` can also be set to \code{fromNone}.}
+\code{arrangeMethod} can also be set to \code{fromNone}.
+}}
 
-\item{inputColumns}{List of boolean (one for each data column), \code{TRUE} for an input column, \code{FALSE} for an output column;
-\code{NULL} is allowed, meaning all columns are inputs.}
+\item{inputColumns}{List of boolean (one for each data column),
+\code{TRUE} for an input column, \code{FALSE} for an output column;
+\code{NULL} is allowed, meaning all columns are inputs.
+A list of column names can also be provided to only indicate which columns are inputs.}
 
 \item{keptColumns}{List of boolean (one for each data column), \code{FALSE} if column has to be ignored;
-\code{NULL} is allowed, meaning all columns are available.}
+\code{NULL} is allowed, meaning all columns are available.
+A list of column names can also be provided
+to only indicate which columns are to be kept.}
 
 \item{histoVisibility}{List of boolean (one for each data column), \code{TRUE} if an histogram must be displayed;
-\code{NULL} is allowed, meaning no histogram must be displayed.}
+\code{NULL} is allowed, meaning no histogram must be displayed.
+A list of column names can also be provided
+to only indicate which columns must have an histogram displayed.}
 
 \item{invertedAxes}{List of boolean (one for each data column), \code{TRUE} if orientation of axis must be inverted;
-\code{NULL} is allowed, meaning no axis must be inverted.}
+\code{NULL} is allowed, meaning no axis must be inverted.
+A list of column names can also be provided
+to only indicate which columns must have an inverted axis.}
 
 \item{cutoffs}{List of list (one for each data column) of list (one for each cutoff)
 containing two values (min and max values defining the cutoff)
 or \code{NULL} if there is no cutoff to apply;
-\code{NULL} is allowed, meaning all columns are without cutoff.}
+\code{NULL} is allowed, meaning all columns are without cutoff.
+A named list can also be provided to only indicate which columns have cutoffs,
+associating a column name to its cutoffs.}
 
 \item{refRowIndex}{Index of the sample row which has to appear horizontal;
 \code{NULL} is allowed, meaning there is no row to use as reference.}
@@ -76,36 +96,70 @@ or \code{NULL} if there is no cutoff to apply;
 \item{columnLabels}{List of string (one for each data column) to display in place of column name found in data,
 or \code{NULL} if there is no alternative name;
 \code{NULL} is allowed, meaning all columns are without alternative name;
-\code{<br>} can be used to insert line breaks.}
+\verb{<br>} can be used to insert line breaks.}
 
 \item{continuousCS}{Name of the color Scale to use for continuous data;
-supported names: "Viridis", "Inferno", "Magma", "Plasma", "Warm", "Cool", "Rainbow", "CubehelixDefault",
-"Blues","Greens", "Greys", "Oranges", "Purples", "Reds", "BuGn", "BuPu", "GnBu", "OrRd", "PuBuGn","PuBu",
-"PuRd", "RdBu", "RdPu", "YlGnBu", "YlGn", "YlOrBr", "YlOrRd";
+supported names: \code{Viridis}, \code{Inferno}, \code{Magma}, \code{Plasma}, \code{Warm}, \code{Cool}, \code{Rainbow},
+\code{CubehelixDefault}, \code{Blues},\code{Greens}, \code{Greys}, \code{Oranges}, \code{Purples}, \code{Reds}, \code{BuGn},
+\code{BuPu}, \code{GnBu}, \code{OrRd}, \code{PuBuGn},\code{PuBu}, \code{PuRd}, \code{RdBu}, \code{RdPu}, \code{YlGnBu}, \code{YlGn},
+\code{YlOrBr}, \code{YlOrRd};
 default value is \code{Viridis}.}
 
 \item{categoricalCS}{Name of the color Scale to use for categorical data;
 supported names: Category10, Accent, Dark2, Paired, Set1;
 default value is \code{Category10}.}
 
-\item{eventInputId}{When plot event occurred, reactive input to write to; \code{NULL} is allowed, default value is 'plotEvent'.}
+\item{eventInputId}{When plot event occurred, reactive input to write to;
+\code{NULL} is allowed, meaning no event is sent.
+An event is a list with two named elements 'type' and 'value'.
+\itemize{
+\item If \code{type} is equal to \code{cutoffChange}:
+\itemize{
+\item \code{value$adjusting} is \code{TRUE} when pointer is moving, changing a cutoff;
+\item \code{value$updatedDim} is the name of last cut column;
+\item \code{value$selectedTraces} gives the indexes of uncut rows;
+\item \code{value$cutoffs} gives the new values for the cutoffs.
+}
+\item If \code{type} is equal to \code{axeOrientationChange}:
+\itemize{
+\item \code{value$invertedAxes} has the same form than \code{invertedAxes} argument.
+}
+\item If \code{type} is equal to \code{refColumnDimChange}:
+\itemize{
+\item \code{value$refColumnDim} is the new column to use as reference
+(see \code{refColumnDim} argument).
+}
+\item If \code{type} is equal to \code{rowClicked}:
+\itemize{
+\item \code{value$rowIndex} is the index of the clicked row.
+}
+\item If \code{type} is equal to \code{pointChange}:
+\itemize{
+\item \code{value$dim} defines the column of the edited point;
+\item \code{value$rowIndex} defines the row of the edited point;
+\item \code{value$newValue} gives the new value for the edited point.
+}
+}}
 
-\item{editionMode}{Supported edition modes: \code{EditionOff, EditionOnDrag, EditionOnDragEnd}; default value is \code{EditionOff} .}
+\item{editionMode}{Supported edition modes: \code{EditionOff}, \code{EditionOnDrag}, \code{EditionOnDragEnd};
+default value is \code{EditionOff} .}
 
 \item{controlWidgets}{Tells if some widgets must be available to control plot;
-\code{NULL} is allowed, meaning that '!HTMLWidgets.shinyMode' is to use;
+\code{NULL} is allowed, meaning that \code{!HTMLWidgets.shinyMode} is to use;
 default value is \code{FALSE}.}
 
 \item{cssRules}{CSS rules to add.
-Must be a named list of the form list(selector = declarations),
-where selector is a valid CSS selector and declarations is a string or vector of declarations.}
+Must be a named list of the form list(selector = declarations), where selector
+is a valid CSS selector and declarations is a string or vector of declarations.}
 
 \item{sliderPosition}{Set initial position of slider, specifying which columns interval is visible.
 Default value is \code{NULL} which is equivalent to:
-  list(
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{  list(
     dimCount = 8,
     startingDimIndex = 1
-  )}
+  )
+}\if{html}{\out{</div>}}}
 
 \item{width}{Integer in pixels defining the width of the widget.}
 
@@ -114,41 +168,46 @@ Default value is \code{NULL} which is equivalent to:
 \item{elementId}{Unique \code{CSS} selector id for the widget.}
 }
 \value{
-An object of class \code{htmlwidget} that will intelligently print itself into HTML in a variety of contexts
-  including the R console, within R Markdown documents, and within Shiny output bindings.
+An object of class \code{htmlwidget} that will intelligently print itself into HTML
+in a variety of contexts including the R console, within R Markdown documents,
+and within Shiny output bindings.
 }
 \description{
-htmlwidget for d3.js parallel coordinate plot
+\code{htmlwidget} for \code{d3.js} parallel coordinate plot
 }
 \examples{
  if(interactive()) {
    library(parallelPlot)
 
-   categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+   categorical <-
+     list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
    parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
-   # 'cyl' and four last columns have a box representation for its categories
+   # `cyl` and four last columns have a box representation for categories
 
    histoVisibility <- rep(TRUE, ncol(iris))
    parallelPlot(iris, histoVisibility = histoVisibility)
    # An histogram is displayed for each column
 
-   histoVisibility <- rep(TRUE, ncol(iris))
-   cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
+   histoVisibility <- names(iris) # Same as `rep(TRUE, ncol(iris))`
+   cutoffs <- list(Sepal.Length = list(c(6, 7)), Species = c("virginica", "setosa"))
    parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
-   # Cut lines are shaded; an histogram is displayed considering only kept lines
+   # Cut lines are shaded;
+   # an histogram for each column is displayed considering only kept lines
 
    parallelPlot(iris, refRowIndex = 1)
-   # Axes are shifted vertically in such a way that first trace of the dataset looks horizontal
+   # Axes are shifted vertically in such a way that first trace
+   # of the dataset looks horizontal
 
    columnLabels <- gsub("\\\\.", "<br>", colnames(iris))
    parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
-   # Given names are displayed in place of dataset column names; <br> is used to insert line breaks
+   # Given names are displayed in place of dataset column names;
+   # <br> is used to insert line breaks
 
    parallelPlot(iris, cssRules = list(
-       "svg" = "background: white",
+       "svg" = "background: #C2C2C2",
        ".tick text" = c("fill: red", "font-size: 1.8em")
    ))
-   # Background of plot is white and text of axes ticks is red and greater
+   # Background of plot is grey and text of axes ticks is red and greater
  }
 
 }

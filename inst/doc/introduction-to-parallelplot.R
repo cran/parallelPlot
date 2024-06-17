@@ -1,4 +1,4 @@
-## ---- include = FALSE---------------------------------------------------------
+## ----include = FALSE----------------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
@@ -27,38 +27,57 @@ parallelPlot(iris, refColumnDim = "Sepal.Length", continuousCS = "YlOrRd")
 parallelPlot(mtcars)
 
 ## -----------------------------------------------------------------------------
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
 parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
 
 ## -----------------------------------------------------------------------------
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", categoriesRep = "EquallySizedBoxes")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  categoriesRep = "EquallySizedBoxes"
+)
 
 ## -----------------------------------------------------------------------------
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromLeft")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  arrangeMethod = "fromLeft"
+)
 
 ## -----------------------------------------------------------------------------
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl", arrangeMethod = "fromBoth")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  refColumnDim = "cyl",
+  arrangeMethod = "fromBoth"
+)
 
 ## -----------------------------------------------------------------------------
-categorical <- list(NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8)
-inputColumns <- c(FALSE, TRUE, TRUE, FALSE, FALSE, TRUE, FALSE, TRUE, TRUE, TRUE, TRUE)
-parallelPlot(mtcars, categorical = categorical, inputColumns = inputColumns, refColumnDim = "cyl")
+categorical <- list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+inputColumns <- c("mpg", "disp", "drat", "qsec", "am", "gear", "carb")
+parallelPlot(
+  mtcars,
+  categorical = categorical,
+  inputColumns = inputColumns,
+  refColumnDim = "cyl"
+)
 
 ## -----------------------------------------------------------------------------
 histoVisibility <- rep(TRUE, ncol(iris))
 parallelPlot(iris, histoVisibility = histoVisibility)
 
 ## -----------------------------------------------------------------------------
-invertedAxes <- rep(FALSE, ncol(iris))
-invertedAxes[2] <- TRUE
+invertedAxes <- c("Sepal.Width")
 parallelPlot(iris, invertedAxes = invertedAxes)
 
 ## -----------------------------------------------------------------------------
-histoVisibility <- rep(TRUE, ncol(iris))
-cutoffs <- list(list(c(6, 7)), NULL, NULL, NULL, c("virginica", "setosa"))
+histoVisibility <- names(iris) # same as `rep(TRUE, ncol(iris))`
+cutoffs <- list(Sepal.Length = list(c(6, 7)), Species = c("virginica", "setosa"))
 parallelPlot(iris, histoVisibility = histoVisibility, cutoffs = cutoffs)
 
 ## -----------------------------------------------------------------------------
@@ -73,12 +92,12 @@ parallelPlot(iris, refColumnDim = "Species", columnLabels = columnLabels)
 
 ## -----------------------------------------------------------------------------
 parallelPlot(iris, cssRules = list(
-    "svg" = "background: white", # Set background of plot to white
-    ".axisLabel" = c("fill: red", "font-size: 1.8em"), # Set title of axes red and greater
-    ".tick text" = "font-size: 1.8em", # Set text of axes ticks greater
-    ".plotGroup path" = "opacity: 0.25", # Make lines less opaque
-    ".xValue" = "color: orange", # Set color for x values in tooltip
-    ".xName" = "display: table" # Trick to have x values on a new line
+  "svg" = "background: #C2C2C2", # Set background of plot to grey
+  ".axisLabel" = c("fill: red", "font-size: 1.8em"), # Set title of axes red and greater
+  ".tick text" = "font-size: 1.8em", # Set text of axes ticks greater
+  ".plotGroup path" = "opacity: 0.25", # Make lines less opaque
+  ".xValue" = "color: orange", # Set color for x values in tooltip
+  ".xName" = "display: table" # Trick to have x values on a new line
 ))
 
 ## -----------------------------------------------------------------------------
@@ -86,8 +105,7 @@ parallelPlot(iris, sliderPosition = list(
   dimCount = 3, # Number of columns to show
   startingDimIndex = 2 # Index of first shown column
 ))
-# Visible columns starts at second column and three columns are represented.
 
 ## -----------------------------------------------------------------------------
-parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE)
+parallelPlot(iris, refColumnDim = "Species", controlWidgets = TRUE, height = 350)
 

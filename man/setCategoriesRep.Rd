@@ -9,15 +9,19 @@ setCategoriesRep(id, categoriesRep)
 \arguments{
 \item{id}{Output variable to read from (id which references the requested plot).}
 
-\item{categoriesRep}{One of the available category representations ("EquallySpacedLines", "EquallySizedBoxes").}
+\item{categoriesRep}{One of the available category representations
+(\code{EquallySpacedLines}, \code{EquallySizedBoxes}).}
 }
 \value{
 No return value, called from shiny applications for side effects.
 }
 \description{
 Within a category column, the height assigned to each category can either be:
-  equal for each category (\code{EquallySizedBoxes});
-  or calculated to reflect the proportion of lines passing through each category (\code{EquallySpacedLines}).
+\itemize{
+\item equal for each category (\code{EquallySizedBoxes});
+\item or calculated to reflect the proportion of lines
+passing through each category (\code{EquallySpacedLines}).
+}
 }
 \examples{
  if(interactive() && require(shiny)) {
@@ -25,28 +29,28 @@ Within a category column, the height assigned to each category can either be:
    library(parallelPlot)
 
    ui <- fluidPage(
-       selectInput(
-         "categoriesRepSelect",
-         "Categories Representation:",
-         choices = list(
-           "EquallySpacedLines" = "EquallySpacedLines", "EquallySizedBoxes" = "EquallySizedBoxes"
-         ),
-         selected = "EquallySpacedLines"
+     selectInput(
+       "categoriesRepSelect",
+       "Categories Representation:",
+       choices = list(
+         "EquallySpacedLines" = "EquallySpacedLines",
+         "EquallySizedBoxes" = "EquallySizedBoxes"
        ),
-       p("The selector controls the the height assigned to each category"),
-       parallelPlotOutput("parPlot")
+       selected = "EquallySpacedLines"
+     ),
+     p("The selector controls the height assigned to each category"),
+     parallelPlotOutput("parPlot")
    )
 
    server <- function(input, output, session) {
-       output$parPlot <- renderParallelPlot({
-           categorical <- list(
-               NULL, c(4, 6, 8), NULL, NULL, NULL, NULL, NULL, c(0, 1), c(0, 1), 3:5, 1:8
-           )
-           parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
-       })
-       observeEvent(input$categoriesRepSelect, {
-           parallelPlot::setCategoriesRep("parPlot", input$categoriesRepSelect)
-       })
+     output$parPlot <- renderParallelPlot({
+       categorical <-
+         list(cyl = c(4, 6, 8), vs = c(0, 1), am = c(0, 1), gear = 3:5, carb = 1:8)
+       parallelPlot(mtcars, categorical = categorical, refColumnDim = "cyl")
+     })
+     observeEvent(input$categoriesRepSelect, {
+       parallelPlot::setCategoriesRep("parPlot", input$categoriesRepSelect)
+     })
    }
 
    shinyApp(ui, server)

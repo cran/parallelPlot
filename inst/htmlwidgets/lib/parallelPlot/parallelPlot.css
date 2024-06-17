@@ -4,7 +4,8 @@
     -webkit-user-select: none;
     -ms-user-select: none;
     user-select: none;
-    background: #C2C2C2;
+    display: block;
+    margin: auto;
 }
 
 .parallelPlot .background path {
@@ -17,11 +18,17 @@
     shape-rendering: auto;
 }
 
-.parallelPlot .axisGroup line,
-.parallelPlot .axisGroup path {
+.parallelPlot .plotGroup .axisGroup line,
+.parallelPlot .plotGroup .axisGroup path {
     fill: none;
     shape-rendering: crispEdges;
     stroke: black;
+}
+
+.parallelPlot .slider .axisGroup line,
+.parallelPlot .slider .axisGroup path {
+    fill: none;
+    stroke: none;
 }
 
 .parallelPlot .axisLabel {
@@ -43,14 +50,20 @@
     opacity: 0.3;
 }
 
-.parallelPlot .axisGroup text,
-.parallelPlot .category text {
+.parallelPlot .plotGroup .axisGroup text,
+.parallelPlot .plotGroup .category text {
     fill: black;
     text-shadow: 0 1px 0 #D0D0D0, 1px 0 0 #D0D0D0, 0 -1px 0 #D0D0D0, -1px 0 0 #D0D0D0;
 }
 
 .parallelPlot .brushDim .overlay {
-    cursor : pointer
+    cursor : pointer;
+    stroke: black;
+}
+
+.parallelPlot .brushDim .selection {
+    fill : black;
+    stroke: none;
 }
 
 .parallelPlot div.sliderTooltip {
